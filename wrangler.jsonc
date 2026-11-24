@@ -1,9 +1,12 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "main": ".open-next/worker.js",
-  "name": "digitalexparts-portfolio-website",
+  "name": "digit-studio-website",
   "compatibility_date": "2026-11-18",
-  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "compatibility_flags": [
+    "nodejs_compat",
+    "global_fetch_strictly_public"
+  ],
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
@@ -12,7 +15,7 @@
     {
       // Self-reference service binding: must match the Worker "name" above.
       "binding": "WORKER_SELF_REFERENCE",
-      "service": "digitalexparts-portfolio-website"
+      "service": "digit-studio-website"
     }
   ],
   "observability": {

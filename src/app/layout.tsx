@@ -40,6 +40,9 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.siteUrl),
+  alternates: {
+    canonical: "/",
+  },
   title: {
     default: "Digit Studio | Creative & Digital Studio",
     template: "%s | Digit Studio",
@@ -98,6 +101,7 @@ export default function RootLayout({
     description:
       SITE.description,
     email: SITE.email,
+    telephone: SITE.phone,
     areaServed: "Worldwide",
     founder: {
       "@type": "Person",
@@ -106,6 +110,18 @@ export default function RootLayout({
       sameAs,
     },
     sameAs,
+  };
+
+  const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${baseUrl}/#website`,
+    url: `${baseUrl}/`,
+    name: SITE.brand,
+    description: SITE.description,
+    publisher: {
+      "@id": `${baseUrl}/#studio`,
+    },
   };
 
   return (
@@ -119,6 +135,10 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
         />
         <SiteShell>{children}</SiteShell>
       </body>

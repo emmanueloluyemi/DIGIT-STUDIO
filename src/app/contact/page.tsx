@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   },
   description:
     "Tell us about your branding, website, AI video, social media or content project.",
+  alternates: {
+    canonical: "/contact",
+  },
 };
 
 interface ContactPageProps {

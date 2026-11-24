@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { ensureGsapRegistered, gsap } from "@/lib/gsap";
 import { useMotionRoot } from "@/components/motion/MotionRootContext";
 import { SITE } from "@/data/site";
@@ -8,6 +9,7 @@ import { SITE } from "@/data/site";
 const SESSION_KEY = "digit_studio_preloader_seen";
 
 export function Preloader() {
+  const pathname = usePathname();
   const { setPreloaderDone, bumpEnterCycle } = useMotionRoot();
   const [shouldRender, setShouldRender] = useState(true);
 
@@ -23,6 +25,7 @@ export function Preloader() {
   useEffect(() => {
     ensureGsapRegistered();
 
+    const isHome = pathname === "/";
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let alreadySeen = false;
     try {
@@ -46,7 +49,7 @@ export function Preloader() {
       setShouldRender(false);
     };
 
-    if (alreadySeen || prefersReduced) {
+    if (!isHome || alreadySeen || prefersReduced) {
       document.documentElement.dataset.preloader = "done";
       const rafId = window.requestAnimationFrame(complete);
       return () => window.cancelAnimationFrame(rafId);
@@ -54,10 +57,10 @@ export function Preloader() {
 
     const counter = { value: 0 };
 
-    // Safety timeout: never block page longer than 1.8s
+    // Strict safety timeout: never block page longer than 1.0s
     const hardTimeout = window.setTimeout(() => {
       complete();
-    }, 1800);
+    }, 1000);
 
     const ctx = gsap.context(() => {
       gsap.set(logoMarkRef.current, { scale: 0.85, opacity: 0 });
@@ -72,7 +75,7 @@ export function Preloader() {
         counter,
         {
           value: 100,
-          duration: 0.85,
+          duration: 0.5,
           ease: "power2.inOut",
           onUpdate: () => {
             const val = Math.round(counter.value);
@@ -91,7 +94,7 @@ export function Preloader() {
           {
             scale: 1,
             opacity: 1,
-            duration: 0.5,
+            duration: 0.35,
             ease: "expo.out",
           },
           0.05
@@ -101,10 +104,10 @@ export function Preloader() {
           {
             y: 0,
             opacity: 1,
-            duration: 0.45,
+            duration: 0.35,
             ease: "expo.out",
           },
-          0.12
+          0.1
         )
         // Elegant curtain exit
         .to(
@@ -112,10 +115,10 @@ export function Preloader() {
           {
             opacity: 0,
             y: -12,
-            duration: 0.22,
+            duration: 0.2,
             ease: "power2.in",
           },
-          0.9
+          0.55
         )
         .add(() => {
           setPreloaderDone(true);
@@ -125,7 +128,7 @@ export function Preloader() {
           topCurtainRef.current,
           {
             yPercent: -100,
-            duration: 0.55,
+            duration: 0.45,
             ease: "expo.inOut",
           },
           "<"
@@ -134,7 +137,7 @@ export function Preloader() {
           bottomCurtainRef.current,
           {
             yPercent: 100,
-            duration: 0.55,
+            duration: 0.45,
             ease: "expo.inOut",
           },
           "<"
@@ -145,7 +148,7 @@ export function Preloader() {
       window.clearTimeout(hardTimeout);
       ctx.revert();
     };
-  }, [setPreloaderDone, bumpEnterCycle]);
+  }, [pathname, setPreloaderDone, bumpEnterCycle]);
 
   if (!shouldRender) return null;
 

@@ -11,6 +11,9 @@ export const metadata: Metadata = {
   },
   description:
     "Explore Digit Studio's five-stage creative and technical delivery methodology, led by founder Emmanuel Oluyemi.",
+  alternates: {
+    canonical: "/how-we-work",
+  },
 };
 
 const WORKING_PRINCIPLES = [

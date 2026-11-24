@@ -23,9 +23,9 @@ interface SmoothScrollContextValue {
 
 const SmoothScrollContext = createContext<SmoothScrollContextValue>({
   getLenis: () => null,
-  scrollTo: () => {},
-  stop: () => {},
-  start: () => {},
+  scrollTo: () => { },
+  stop: () => { },
+  start: () => { },
 });
 
 export function SmoothScrollProvider({ children }: { children: React.ReactNode }) {
@@ -47,9 +47,7 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
     const lenis = new Lenis({
       lerp: isDesktopFinePointer ? 0.1 : 0.12,
       smoothWheel: true,
-      syncTouch: true,
-      syncTouchLerp: 0.085,
-      touchInertiaExponent: 1.55,
+      syncTouch: false,
       touchMultiplier: 1,
       wheelMultiplier: 1,
     });

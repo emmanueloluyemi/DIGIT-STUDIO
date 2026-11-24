@@ -91,7 +91,7 @@ export const STATS: StatItem[] = [
     value: 100,
     suffix: "%",
     label: "Upwork Job Success Score",
-    detail: "Top-rated client satisfaction score maintained across verified Upwork client engagements.",
+    detail: "Founder-reported client satisfaction score maintained across verified Upwork client engagements.",
   },
   {
     value: 5,

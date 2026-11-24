@@ -20,20 +20,27 @@ export default function HeroCanvas({ onHoverStateChange }: HeroCanvasProps) {
     const canvas = canvasRef.current;
     if (!container || !canvas) return;
 
+    let isVisible = true;
+    let animId = 0;
+    const isMobile = window.innerWidth < 768;
+    const isLowPower =
+      isMobile ||
+      (typeof navigator !== "undefined" &&
+        Boolean(navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4));
+
     let renderer: THREE.WebGLRenderer;
     try {
       renderer = new THREE.WebGLRenderer({
         canvas,
         alpha: true,
-        antialias: window.innerWidth >= 768,
-        powerPreference: "high-performance",
+        antialias: !isLowPower,
+        powerPreference: isLowPower ? "low-power" : "high-performance",
       });
     } catch {
       return;
     }
 
-    const isMobile = window.innerWidth < 768;
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? 1.25 : 1.75));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isLowPower ? 1.2 : 1.75));
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
@@ -47,6 +54,28 @@ export default function HeroCanvas({ onHoverStateChange }: HeroCanvasProps) {
       renderer.setSize(w, h, false);
     };
     updateSize();
+
+    const resizeObserver = new ResizeObserver(() => {
+      updateSize();
+    });
+    resizeObserver.observe(container);
+
+    const intersectionObserver = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry ? entry.isIntersecting : true;
+      },
+      { threshold: 0.05 }
+    );
+    intersectionObserver.observe(container);
+
+    const handleVisibility = () => {
+      if (document.hidden) {
+        isVisible = false;
+      } else {
+        isVisible = true;
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
 
     // Studio Lighting for Specular Obsidian & Deep Crimson Light Reflections
     const ambientLight = new THREE.AmbientLight(0x1a1516, 1.6);
@@ -93,18 +122,26 @@ export default function HeroCanvas({ onHoverStateChange }: HeroCanvasProps) {
 
     // 2. Refractive Crimson Glass Inner Core (Octahedron)
     const coreGeo = new THREE.OctahedronGeometry(0.9, 0);
-    const coreMat = new THREE.MeshPhysicalMaterial({
-      color: 0x8b0d1a,
-      emissive: 0x670913,
-      emissiveIntensity: 0.35,
-      roughness: 0.05,
-      metalness: 0.1,
-      transmission: 0.85,
-      ior: 1.52,
-      thickness: 1.2,
-      transparent: true,
-      opacity: 0.92,
-    });
+    const coreMat = isLowPower
+      ? new THREE.MeshStandardMaterial({
+          color: 0x8b0d1a,
+          roughness: 0.2,
+          metalness: 0.35,
+          transparent: true,
+          opacity: 0.88,
+        })
+      : new THREE.MeshPhysicalMaterial({
+          color: 0x8b0d1a,
+          emissive: 0x670913,
+          emissiveIntensity: 0.35,
+          roughness: 0.05,
+          metalness: 0.1,
+          transmission: 0.85,
+          ior: 1.52,
+          thickness: 1.2,
+          transparent: true,
+          opacity: 0.92,
+        });
     const coreMesh = new THREE.Mesh(coreGeo, coreMat);
     sculptureGroup.add(coreMesh);
 
@@ -173,16 +210,25 @@ export default function HeroCanvas({ onHoverStateChange }: HeroCanvasProps) {
       onHoverStateChange?.(false);
     };
 
-    window.addEventListener("resize", updateSize);
+    const onContextLost = (e: Event) => {
+      e.preventDefault();
+      if (animId) window.cancelAnimationFrame(animId);
+    };
+    const onContextRestored = () => {
+      animate();
+    };
+    canvas.addEventListener("webglcontextlost", onContextLost, false);
+    canvas.addEventListener("webglcontextrestored", onContextRestored, false);
+
     container.addEventListener("pointermove", onPointerMove, { passive: true });
     container.addEventListener("pointerenter", onPointerEnter);
     container.addEventListener("pointerleave", onPointerLeave);
 
-    let animId = 0;
     const startTime = performance.now();
 
     const animate = () => {
       animId = window.requestAnimationFrame(animate);
+      if (!isVisible) return;
       const elapsedTime = (performance.now() - startTime) * 0.001;
 
       // Damped pointer follow
@@ -220,7 +266,11 @@ export default function HeroCanvas({ onHoverStateChange }: HeroCanvasProps) {
 
     return () => {
       window.cancelAnimationFrame(animId);
-      window.removeEventListener("resize", updateSize);
+      resizeObserver.disconnect();
+      intersectionObserver.disconnect();
+      document.removeEventListener("visibilitychange", handleVisibility);
+      canvas.removeEventListener("webglcontextlost", onContextLost);
+      canvas.removeEventListener("webglcontextrestored", onContextRestored);
       container.removeEventListener("pointermove", onPointerMove);
       container.removeEventListener("pointerenter", onPointerEnter);
       container.removeEventListener("pointerleave", onPointerLeave);

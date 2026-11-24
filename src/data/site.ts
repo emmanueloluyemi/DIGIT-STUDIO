@@ -21,9 +21,16 @@ export const SITE = {
   whatsappUrl: "https://wa.me/2348028634791",
   phone: "+2348028634791",
   linkedinUrl: "https://www.linkedin.com/in/emmanueloluyemi",
+  // TODO: Verify fiverrUrl handle; currently configured with placeholder/channel URL
   fiverrUrl: "https://www.fiverr.com/users/brittanydedrick",
   upworkUrl: "https://www.upwork.com/freelancers/~01c06bedf0cb7cfed6",
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
+  siteUrl:
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (process.env.NODE_ENV === "production"
+      ? (() => {
+          throw new Error("NEXT_PUBLIC_SITE_URL is required in production");
+        })()
+      : "http://localhost:3000"),
   tagline: "Creative thinking, digital craft and visual storytelling for ambitious brands.",
   shortLockup: "Branding · Development · AI Video · Digital Experiences",
   nameLine: "Digit Studio is an independent creative and digital studio founded by Emmanuel Oluyemi.",

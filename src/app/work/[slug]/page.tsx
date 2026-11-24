@@ -29,6 +29,9 @@ export async function generateMetadata({
       absolute: `${project.title} | ${project.category} Case Study | Digit Studio`,
     },
     description: project.tagline,
+    alternates: {
+      canonical: `/work/${project.slug}`,
+    },
     openGraph: {
       title: `${project.title} | ${project.category} Case Study | Digit Studio`,
       description: project.tagline,

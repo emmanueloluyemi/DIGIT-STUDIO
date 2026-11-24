@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
     deviceSizes: [375, 640, 768, 1024, 1280, 1440, 1920],
   },
+  poweredByHeader: false,
   reactStrictMode: true,
 };
 

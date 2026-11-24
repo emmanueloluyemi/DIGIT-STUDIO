@@ -6,6 +6,7 @@ import React, {
   useContext,
   useEffect,
   useRef,
+  useState,
 } from "react";
 import Link, { type LinkProps } from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -20,7 +21,7 @@ interface TransitionContextValue {
 }
 
 const TransitionContext = createContext<TransitionContextValue>({
-  navigate: () => {},
+  navigate: () => { },
 });
 
 export function usePageTransition() {
@@ -38,11 +39,23 @@ export function PageTransitionProvider({
   const { scrollTo, stop, start } = useSmoothScroll();
   const { prefersReducedMotion } = useMediaCapabilities();
 
+  const [announcement, setAnnouncement] = useState("");
   const overlayRef = useRef<HTMLDivElement>(null);
   const labelRef = useRef<HTMLDivElement>(null);
   const pendingPathRef = useRef<string | null>(null);
   const safetyTimerRef = useRef<number | null>(null);
   const isAnimatingRef = useRef(false);
+
+  const focusMainAndAnnounce = useCallback(() => {
+    // Accessible focus shift to #main-content
+    const mainEl = document.getElementById("main-content");
+    if (mainEl) {
+      mainEl.focus({ preventScroll: true });
+    }
+    // Update live region announcement
+    const title = document.title || SITE.brand;
+    setAnnouncement(`Navigated to ${title}`);
+  }, []);
 
   const wipeOut = useCallback(() => {
     const overlay = overlayRef.current;
@@ -51,6 +64,7 @@ export function PageTransitionProvider({
       setIsTransitioning(false);
       start();
       bumpEnterCycle();
+      focusMainAndAnnounce();
       return;
     }
 
@@ -76,10 +90,11 @@ export function PageTransitionProvider({
           isAnimatingRef.current = false;
           setIsTransitioning(false);
           start();
+          focusMainAndAnnounce();
         },
       });
     });
-  }, [bumpEnterCycle, setIsTransitioning, start]);
+  }, [bumpEnterCycle, focusMainAndAnnounce, setIsTransitioning, start]);
 
   // Trigger wipe-out when Next.js finishes switching pathname
   useEffect(() => {
@@ -131,6 +146,7 @@ export function PageTransitionProvider({
         window.scrollTo(0, 0);
         scrollTo(0, { immediate: true });
         bumpEnterCycle();
+        focusMainAndAnnounce();
         return;
       }
 
@@ -184,6 +200,7 @@ export function PageTransitionProvider({
       setMenuOpen,
       stop,
       bumpEnterCycle,
+      focusMainAndAnnounce,
       wipeOut,
     ]
   );
@@ -191,6 +208,16 @@ export function PageTransitionProvider({
   return (
     <TransitionContext.Provider value={{ navigate }}>
       {children}
+
+      {/* Accessible route change announcement for screen readers */}
+      <div
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+      >
+        {announcement}
+      </div>
 
       {/* Full-Screen Route Wipe Overlay (M14) */}
       <div
@@ -215,7 +242,7 @@ export function PageTransitionProvider({
 
 export interface TransitionLinkProps
   extends Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, keyof LinkProps>,
-    LinkProps {
+  LinkProps {
   children: React.ReactNode;
   className?: string;
 }

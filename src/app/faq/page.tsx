@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   },
   description:
     "Straight answers about Digit Studio services, project enquiries, process, pricing and confidentiality.",
+  alternates: {
+    canonical: "/faq",
+  },
 };
 
 export default function FaqPage() {

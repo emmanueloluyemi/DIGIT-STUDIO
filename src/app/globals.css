@@ -28,6 +28,7 @@
     font-family: var(--font-body);
     overflow-x: clip;
     scroll-behavior: auto;
+    scrollbar-gutter: stable;
     color-scheme: dark;
     /* ✦ No-flash: initial theme is applied by inline script in <head> before paint */
   }

@@ -5,28 +5,29 @@ import { SITE } from "@/data/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = SITE.siteUrl.replace(/\/$/, "");
-  const now = new Date();
+  // Use real deployment ISO date string for static crawl determinism
+  const lastMod = new Date("2026-11-24T00:00:00.000Z");
 
   const staticRoutes: MetadataRoute.Sitemap = [
-    { url: `${baseUrl}/`, lastModified: now, changeFrequency: "weekly", priority: 1 },
-    { url: `${baseUrl}/services`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
-    { url: `${baseUrl}/work`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
-    { url: `${baseUrl}/how-we-work`, lastModified: now, changeFrequency: "monthly", priority: 0.85 },
-    { url: `${baseUrl}/about`, lastModified: now, changeFrequency: "monthly", priority: 0.85 },
-    { url: `${baseUrl}/faq`, lastModified: now, changeFrequency: "monthly", priority: 0.75 },
-    { url: `${baseUrl}/contact`, lastModified: now, changeFrequency: "monthly", priority: 0.85 },
+    { url: `${baseUrl}/`, lastModified: lastMod, changeFrequency: "weekly", priority: 1 },
+    { url: `${baseUrl}/services`, lastModified: lastMod, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${baseUrl}/work`, lastModified: lastMod, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${baseUrl}/how-we-work`, lastModified: lastMod, changeFrequency: "monthly", priority: 0.85 },
+    { url: `${baseUrl}/about`, lastModified: lastMod, changeFrequency: "monthly", priority: 0.85 },
+    { url: `${baseUrl}/faq`, lastModified: lastMod, changeFrequency: "monthly", priority: 0.75 },
+    { url: `${baseUrl}/contact`, lastModified: lastMod, changeFrequency: "monthly", priority: 0.85 },
   ];
 
   const serviceRoutes: MetadataRoute.Sitemap = SERVICES.map((svc) => ({
     url: `${baseUrl}/services/${svc.slug}`,
-    lastModified: now,
+    lastModified: lastMod,
     changeFrequency: "monthly",
     priority: 0.85,
   }));
 
   const projectRoutes: MetadataRoute.Sitemap = PROJECTS.map((project) => ({
     url: `${baseUrl}/work/${project.slug}`,
-    lastModified: now,
+    lastModified: lastMod,
     changeFrequency: "monthly",
     priority: 0.75,
   }));

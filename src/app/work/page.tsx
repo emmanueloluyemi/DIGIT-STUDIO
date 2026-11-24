@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   },
   description:
     "Explore selected concept projects and approved creative and digital work from Digit Studio.",
+  alternates: {
+    canonical: "/work",
+  },
 };
 
 export default function WorkPage() {

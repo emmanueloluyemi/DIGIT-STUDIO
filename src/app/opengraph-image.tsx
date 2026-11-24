@@ -1,3 +1,5 @@
+import fs from "node:fs";
+import path from "node:path";
 import { ImageResponse } from "next/og";
 import { SITE } from "@/data/site";
 
@@ -8,7 +10,21 @@ export const size = {
 };
 export const contentType = "image/png";
 
+function loadSyneFont(): Buffer | null {
+  try {
+    const fontPath = path.join(process.cwd(), "src/assets/fonts/Syne-Bold.ttf");
+    if (fs.existsSync(fontPath)) {
+      return fs.readFileSync(fontPath);
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 export default function OpenGraphImage() {
+  const syneFont = loadSyneFont();
+
   return new ImageResponse(
     (
       <div
@@ -21,7 +37,7 @@ export default function OpenGraphImage() {
           backgroundColor: "#0B0B0B",
           color: "#F5F2ED",
           padding: "64px 72px",
-          fontFamily: "sans-serif",
+          fontFamily: syneFont ? "Syne, sans-serif" : "sans-serif",
           border: "1px solid rgba(245,242,237,0.12)",
         }}
       >
@@ -107,6 +123,18 @@ export default function OpenGraphImage() {
         </div>
       </div>
     ),
-    { ...size }
+    syneFont
+      ? {
+          ...size,
+          fonts: [
+            {
+              name: "Syne",
+              data: syneFont,
+              style: "normal" as const,
+              weight: 700 as const,
+            },
+          ],
+        }
+      : { ...size }
   );
 }

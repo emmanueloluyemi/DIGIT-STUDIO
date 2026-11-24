@@ -6,6 +6,9 @@ import { MagneticButton } from "@/components/motion/MagneticButton";
 export const metadata: Metadata = {
   title: { absolute: "About Digit Studio | Independent Creative & Digital Studio" },
   description: "Meet Digit Studio, an independent creative and digital studio founded by Emmanuel Oluyemi.",
+  alternates: {
+    canonical: "/about",
+  },
 };
 
 const PRINCIPLES = [
