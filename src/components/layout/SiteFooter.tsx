@@ -19,6 +19,25 @@ export function SiteFooter() {
 
   const { scrollTo } = useSmoothScroll();
   const { prefersReducedMotion } = useMediaCapabilities();
+  const [comfortReduced, setComfortReduced] = React.useState(false);
+
+  React.useEffect(() => {
+    try {
+      const saved = localStorage.getItem("digit_comfort_reduced");
+      if (saved === "1" || prefersReducedMotion) {
+        window.setTimeout(() => setComfortReduced(true), 0);
+      }
+    } catch {}
+  }, [prefersReducedMotion]);
+
+  const toggleComfortMode = () => {
+    const next = !comfortReduced;
+    setComfortReduced(next);
+    try {
+      localStorage.setItem("digit_comfort_reduced", next ? "1" : "0");
+      document.documentElement.dataset.comfort = next ? "reduced" : "full";
+    } catch {}
+  };
 
   // M15: Bottom giant DIGIT STUDIO wordmark infinite continuous marquee (never clipped!)
   useEffect(() => {
@@ -269,11 +288,34 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="container-editorial mt-5 flex flex-wrap items-center justify-between gap-3 text-xs text-[var(--text-muted)]">
-          <span suppressHydrationWarning>
-            © {new Date().getFullYear()} {SITE.brand}. All rights reserved.
-          </span>
-          <span>Fully remote · All time zones</span>
+        <div className="container-editorial mt-5 flex flex-col gap-4 border-t border-[var(--border-subtle)] pt-4 text-xs text-[var(--text-muted)] sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-wrap items-center gap-4">
+            <span suppressHydrationWarning>
+              © {new Date().getFullYear()} {SITE.brand}. All rights reserved.
+            </span>
+            <span>·</span>
+            <TransitionLink href="/accessibility" className="hover:text-[var(--text-primary)] underline underline-offset-2">
+              Accessibility Statement
+            </TransitionLink>
+            <span>·</span>
+            <TransitionLink href="/journal" className="hover:text-[var(--text-primary)] underline underline-offset-2">
+              Engineering Journal
+            </TransitionLink>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-[var(--text-muted)]">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              Cloudflare Edge (OpenNext)
+            </span>
+            <button
+              type="button"
+              onClick={toggleComfortMode}
+              className="rounded-full border border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-[var(--text-secondary)] hover:border-[var(--accent)] hover:text-[var(--text-primary)] transition-colors"
+            >
+              Motion: {comfortReduced ? "Reduced" : "Dynamic"}
+            </button>
+          </div>
         </div>
       </div>
     </footer>

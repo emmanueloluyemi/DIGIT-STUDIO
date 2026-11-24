@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { PROJECTS } from "@/data/projects";
 import { SERVICES } from "@/data/services";
+import { JOURNAL_POSTS } from "@/data/journal";
 import { SITE } from "@/data/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -14,8 +15,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/work`, lastModified: lastMod, changeFrequency: "weekly", priority: 0.9 },
     { url: `${baseUrl}/how-we-work`, lastModified: lastMod, changeFrequency: "monthly", priority: 0.85 },
     { url: `${baseUrl}/about`, lastModified: lastMod, changeFrequency: "monthly", priority: 0.85 },
+    { url: `${baseUrl}/journal`, lastModified: lastMod, changeFrequency: "weekly", priority: 0.8 },
     { url: `${baseUrl}/faq`, lastModified: lastMod, changeFrequency: "monthly", priority: 0.75 },
     { url: `${baseUrl}/contact`, lastModified: lastMod, changeFrequency: "monthly", priority: 0.85 },
+    { url: `${baseUrl}/accessibility`, lastModified: lastMod, changeFrequency: "monthly", priority: 0.6 },
   ];
 
   const serviceRoutes: MetadataRoute.Sitemap = SERVICES.map((svc) => ({
@@ -32,5 +35,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.75,
   }));
 
-  return [...staticRoutes, ...serviceRoutes, ...projectRoutes];
+  const journalRoutes: MetadataRoute.Sitemap = JOURNAL_POSTS.map((post) => ({
+    url: `${baseUrl}/journal/${post.slug}`,
+    lastModified: lastMod,
+    changeFrequency: "monthly",
+    priority: 0.75,
+  }));
+
+  return [...staticRoutes, ...serviceRoutes, ...projectRoutes, ...journalRoutes];
 }

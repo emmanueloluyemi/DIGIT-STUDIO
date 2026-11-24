@@ -48,8 +48,9 @@ export const NAV_LINKS: NavItem[] = [
   { index: "03", label: "Services", href: "/services", description: "Explore what we can create together" },
   { index: "04", label: "Process", href: "/how-we-work", description: "How projects move from idea to delivery" },
   { index: "05", label: "About", href: "/about", description: "The studio and its founder" },
-  { index: "06", label: "FAQ", href: "/faq", description: "Answers to common project questions" },
-  { index: "07", label: "Contact", href: "/contact", description: "Tell us what you want to build" },
+  { index: "06", label: "Journal", href: "/journal", description: "Engineering notes and creative thoughts" },
+  { index: "07", label: "FAQ", href: "/faq", description: "Answers to common project questions" },
+  { index: "08", label: "Contact", href: "/contact", description: "Tell us what you want to build" },
 ];
 
 export const PLATFORM_PROFILES: ExternalProfile[] = [

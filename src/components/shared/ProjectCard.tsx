@@ -228,20 +228,33 @@ export function ProjectCard({
           </div>
         </div>
 
-        {/* Project Copy Row with Title Slide */}
+        {/* Project Copy Row with Title Slide and Extended Metadata */}
         <div className="mt-4 flex items-start justify-between gap-4 border-b border-[var(--border-subtle)] pb-5">
-          <div className="space-y-1.5 min-w-0">
-            <div className="flex items-baseline gap-3">
+          <div className="space-y-2 min-w-0">
+            <div className="flex flex-wrap items-baseline gap-3">
               <span className="font-mono text-xs text-[var(--text-muted)]">
                 {project.index}
               </span>
               <h3 className="font-display text-xl sm:text-2xl font-bold tracking-tight text-[var(--text-primary)] transition-transform duration-500 ease-[var(--ease-expo)] group-hover:translate-x-2 group-hover:text-[var(--accent)]">
                 {project.title}
               </h3>
+              <span className="rounded-full border border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-2.5 py-0.5 font-mono text-[11px] text-[var(--text-secondary)]">
+                {project.sector}
+              </span>
             </div>
-            <p className="text-sm sm:text-base text-[var(--text-secondary)] line-clamp-2">
-              {project.tagline}
+            <p className="text-sm text-[var(--text-secondary)] line-clamp-2">
+              {project.blurb || project.tagline}
             </p>
+            <div className="flex flex-wrap gap-1.5 pt-0.5">
+              {project.services?.slice(0, 3).map((svc) => (
+                <span
+                  key={svc}
+                  className="rounded-md border border-[var(--border-subtle)]/70 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-[var(--text-muted)]"
+                >
+                  {svc}
+                </span>
+              ))}
+            </div>
           </div>
 
           <span

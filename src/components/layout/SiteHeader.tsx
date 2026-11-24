@@ -32,7 +32,7 @@ export function SiteHeader() {
 
   const [isScrolled, setIsScrolled] = useState(false);
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
-  const [localTime, setLocalTime] = useState<string>("");
+  const [lagosTime, setLagosTime] = useState<string>("");
   const [clipOrigin, setClipOrigin] = useState<ClipOrigin>({ x: 0, y: 38 });
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [theme, setTheme] = useState<"dark" | "light">("dark");
@@ -70,15 +70,15 @@ export function SiteHeader() {
     const updateClock = () => {
       try {
         const now = new Date();
-        const formatted = new Intl.DateTimeFormat(undefined, {
+        const lagosFormatted = new Intl.DateTimeFormat("en-GB", {
           hour: "2-digit",
           minute: "2-digit",
-          second: "2-digit",
-          timeZoneName: "short",
+          timeZone: "Africa/Lagos",
+          hour12: true,
         }).format(now);
-        setLocalTime(formatted);
+        setLagosTime(lagosFormatted.toUpperCase());
       } catch {
-        setLocalTime(new Date().toLocaleTimeString());
+        setLagosTime("WAT");
       }
     };
 
@@ -357,6 +357,15 @@ export function SiteHeader() {
             />
           </TransitionLink>
 
+          {/* Lagos Local Time Availability Strip (Desktop) */}
+          <div className="hidden lg:inline-flex items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-elevated)]/60 px-3 py-1 font-mono text-[11px] text-[var(--text-secondary)]">
+            <span className="relative flex h-2 w-2">
+              <span className="status-dot-pulse absolute inline-flex h-full w-full rounded-full bg-[var(--accent)]" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--accent)]" />
+            </span>
+            <span>Lagos {lagosTime || "WAT"} · Available for brief</span>
+          </div>
+
           {/* Right Controls: Theme, Let's talk + Menu Toggle */}
           <div className="flex items-center gap-2 sm:gap-3">
             <button
@@ -599,15 +608,15 @@ export function SiteHeader() {
               </div>
             </div>
 
-            {/* Visitor Local Time + Availability */}
+            {/* Studio Location & Local Time + Availability */}
             <div
               data-menu-meta
               className="flex flex-wrap items-center justify-between gap-4 border-t border-[var(--border-subtle)] pt-5"
             >
               <div>
-                <p className="text-eyebrow">Your local time</p>
+                <p className="text-eyebrow">Studio base &amp; time</p>
                 <p className="mt-1 font-mono text-sm tabular-nums text-[var(--text-primary)]">
-                  {localTime || "--:--:--"}
+                  Lagos, NG ({lagosTime || "--:--"} WAT)
                 </p>
               </div>
               <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-3.5 py-2 text-xs text-[var(--text-secondary)]">

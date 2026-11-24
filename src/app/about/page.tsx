@@ -45,19 +45,46 @@ export default function AboutPage() {
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-center">
           <div className="lg:col-span-4 space-y-3">
             <p className="text-eyebrow">Founder</p>
-            <div className="flex aspect-[4/3] flex-col items-center justify-center rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-6 text-center">
-              <span className="font-display text-6xl font-bold tracking-[-0.08em] text-[var(--accent)]">EO</span>
-              <span className="mt-3 text-xs font-mono uppercase tracking-[0.14em] text-[var(--text-muted)]">Emmanuel Oluyemi</span>
+            <div className="flex aspect-[4/3] flex-col items-center justify-center rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-6 text-center shadow-lg relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-br from-[var(--accent)]/10 via-transparent to-black/20 pointer-events-none" />
+              <span className="font-display text-7xl font-bold tracking-[-0.08em] text-[var(--accent)] transition-transform duration-500 group-hover:scale-105">EO</span>
+              <span className="mt-3 text-xs font-mono uppercase tracking-[0.18em] text-[var(--text-muted)]">Emmanuel Oluyemi</span>
+              <span className="text-[11px] font-mono text-[var(--text-secondary)] mt-1">Founder &amp; Creative Technologist</span>
             </div>
           </div>
           <div className="lg:col-span-8 space-y-5">
             <h2 className="font-display text-3xl sm:text-4xl font-bold">Emmanuel Oluyemi</h2>
-            <p className="text-eyebrow">Founder · Creative & Digital</p>
+            <p className="text-eyebrow">Founder · Creative &amp; Digital</p>
             <p className="text-base sm:text-lg leading-relaxed text-[var(--text-secondary)]">Emmanuel&apos;s work spans graphic design and branding, web design and development, AI video creation, animation, content creation and social media management. His approach combines visual thinking with an understanding of the business, audience and market behind each project.</p>
             <div className="flex flex-wrap gap-3">
               <MagneticButton href={SITE.linkedinUrl} external variant="secondary" size="sm">LinkedIn ↗</MagneticButton>
               <MagneticButton href={SITE.upworkUrl} external variant="secondary" size="sm">Upwork ↗</MagneticButton>
+              <MagneticButton href={SITE.whatsappUrl} external variant="secondary" size="sm">WhatsApp ↗</MagneticButton>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Founder Point of View / Manifesto */}
+      <section className="container-editorial border-t border-[var(--border-subtle)] py-14 sm:py-20">
+        <div className="rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-8 sm:p-14 space-y-6">
+          <p className="text-eyebrow">Studio Manifesto · Point of View</p>
+          <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold max-w-3xl leading-snug">
+            &ldquo;When creative vision and technical execution live under one roof, nothing gets lost in translation.&rdquo;
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-base sm:text-lg text-[var(--text-secondary)] leading-relaxed pt-4 border-t border-[var(--border-subtle)]">
+            <p>
+              Traditional agencies often separate design teams from engineering squads, with account managers acting as lossy translators in between. By the time a concept reaches production, the nuance that made it special is diluted.
+            </p>
+            <p>
+              At Digit Studio, we build what we design. Every typography choice, micro-interaction, shader transition, and narrative video cut is considered in concert. You communicate directly with the maker, ensuring velocity, transparency, and uncompromised craft.
+            </p>
+          </div>
+          <div className="pt-4 flex items-center gap-4">
+            <div className="h-0.5 w-10 bg-[var(--accent)]" />
+            <span className="font-mono text-xs uppercase tracking-widest text-[var(--text-primary)] font-semibold">
+              Emmanuel Oluyemi — Lagos, Nigeria
+            </span>
           </div>
         </div>
       </section>

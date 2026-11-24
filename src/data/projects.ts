@@ -12,6 +12,10 @@ export interface ProjectItem {
   tagline: string;
   category: ProjectCategory;
   serviceSlug: string;
+  services: string[];
+  sector: string;
+  blurb: string;
+  type: string;
   isConcept?: boolean;
   year: string;
   client: string;
@@ -39,6 +43,17 @@ export const PROJECT_CATEGORIES: Array<"All Work" | ProjectCategory> = [
   "Content",
 ];
 
+export const PROJECT_SECTORS = [
+  "All Sectors",
+  "Fintech",
+  "Luxury Skincare",
+  "Hardware & AI",
+  "Automation & SaaS",
+  "Specialty Coffee",
+] as const;
+
+export type ProjectSector = (typeof PROJECT_SECTORS)[number];
+
 /**
  * Single source of truth for portfolio case studies.
  * Sample projects are transparently flagged `isConcept: true` until replaced by NDA-cleared client case studies.
@@ -51,6 +66,10 @@ export const PROJECTS: ProjectItem[] = [
     tagline: "Custom Next.js fintech launch site & interactive pricing flow (Studio Concept).",
     category: "Development",
     serviceSlug: "web-design-development",
+    services: ["Web Design", "Development", "Design System"],
+    sector: "Fintech",
+    blurb: "High-performance treasury & invoicing platform built with Next.js, sub-second edge routing, and interactive fee models.",
+    type: "Studio Concept",
     isConcept: true,
     year: "2026",
     client: "Studio Concept · Fintech",
@@ -88,6 +107,10 @@ export const PROJECTS: ProjectItem[] = [
     tagline: "Botanical brand identity, packaging direction & luxury storefront (Studio Concept).",
     category: "Branding",
     serviceSlug: "branding-design",
+    services: ["Brand Identity", "Packaging Design", "E-Commerce"],
+    sector: "Luxury Skincare",
+    blurb: "Monochrome botanical identity, tactile packaging specifications and a bespoke high-conversion direct storefront.",
+    type: "Studio Concept",
     isConcept: true,
     year: "2026",
     client: "Studio Concept · Skincare",
@@ -125,6 +148,10 @@ export const PROJECTS: ProjectItem[] = [
     tagline: "Scripted AI video launch teaser & multi-format social ad suite (Studio Concept).",
     category: "AI Video",
     serviceSlug: "ai-video-animation",
+    services: ["AI Video Production", "Motion Graphics", "Paid Social Ads"],
+    sector: "Hardware & AI",
+    blurb: "Studio-grade synthetic product teaser and 9:16 vertical paid social cutdown suite delivered in days without physical shoots.",
+    type: "Studio Concept",
     isConcept: true,
     year: "2026",
     client: "Studio Concept · Hardware",
@@ -162,6 +189,10 @@ export const PROJECTS: ProjectItem[] = [
     tagline: "Multi-channel marketing campaign, social strategy & automated funnel (Studio Concept).",
     category: "Marketing",
     serviceSlug: "social-media-management",
+    services: ["Marketing Strategy", "Paid Ads Creative", "Conversion Funnels"],
+    sector: "Automation & SaaS",
+    blurb: "Unified multi-channel acquisition funnel pairing narrative positioning hooks with conversion-engineered ad creatives.",
+    type: "Studio Concept",
     isConcept: true,
     year: "2026",
     client: "Studio Concept · Marketing & Funnels",
@@ -199,6 +230,10 @@ export const PROJECTS: ProjectItem[] = [
     tagline: "Narrative storytelling, brand publications & educational digital content (Studio Concept).",
     category: "Content",
     serviceSlug: "content-creation",
+    services: ["Editorial Content", "Brand Storytelling", "Video Direction"],
+    sector: "Specialty Coffee",
+    blurb: "Multi-chapter digital publications and educational video storyboards establishing cultural presence and brand authority.",
+    type: "Studio Concept",
     isConcept: true,
     year: "2026",
     client: "Studio Concept · Brand Publication",
@@ -236,6 +271,10 @@ export const PROJECTS: ProjectItem[] = [
     tagline: "High-performance web architecture, custom dashboard & API integrations (Studio Concept).",
     category: "Development",
     serviceSlug: "web-design-development",
+    services: ["Platform Architecture", "Dashboard UI", "API Integration"],
+    sector: "Fintech",
+    blurb: "High-velocity web architecture with 60fps micro-interactions, responsive data dashboards, and edge-cached APIs.",
+    type: "Studio Concept",
     isConcept: true,
     year: "2026",
     client: "Studio Concept · Digital Product",

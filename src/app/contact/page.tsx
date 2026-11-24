@@ -39,33 +39,71 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
           </div>
 
           <FadeUp trigger="enter" delay={0.28} className="space-y-6 border-t border-[var(--border-subtle)] pt-8">
-            <div className="space-y-1.5">
-              <p className="text-eyebrow">Prefer email?</p>
-              <a
-                href={`mailto:${SITE.email}`}
-                className="inline-flex min-h-[44px] items-center font-display text-xl sm:text-2xl font-bold text-[var(--text-primary)] underline decoration-[var(--border-strong)] underline-offset-4 hover:text-[var(--accent)] hover:decoration-[var(--accent)]"
-              >
-                {SITE.email}
-              </a>
+            {/* 3 Intake Routes */}
+            <div className="space-y-4">
+              <p className="text-eyebrow">Three ways to connect</p>
+
+              {/* Route 1: Online Brief */}
+              <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-4 sm:p-5 space-y-1.5">
+                <div className="flex items-center gap-2">
+                  <span className="font-mono text-xs uppercase text-[var(--accent)] font-semibold">Route 01</span>
+                  <span className="text-xs text-[var(--text-muted)]">· Most detailed</span>
+                </div>
+                <p className="font-display text-base font-bold text-[var(--text-primary)]">Interactive Project Brief</p>
+                <p className="text-xs text-[var(--text-secondary)]">Complete the 6-step inquiry form for an accurate scope, timeline and cost estimate.</p>
+              </div>
+
+              {/* Route 2: Direct WhatsApp */}
+              <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-4 sm:p-5 space-y-2">
+                <div className="flex items-center gap-2">
+                  <span className="font-mono text-xs uppercase text-[var(--accent)] font-semibold">Route 02</span>
+                  <span className="text-xs text-[var(--text-muted)]">· Fastest response</span>
+                </div>
+                <p className="font-display text-base font-bold text-[var(--text-primary)]">Direct WhatsApp Chat</p>
+                <p className="text-xs text-[var(--text-secondary)]">Message founder Emmanuel Oluyemi directly for urgent inquiries or preliminary questions.</p>
+                <a
+                  href={SITE.whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex min-h-[40px] items-center gap-2 rounded-full border border-[var(--accent)]/40 bg-[var(--accent-soft)] px-4 text-xs font-mono uppercase tracking-wider text-[var(--accent)] hover:bg-[var(--accent)] hover:text-[var(--accent-ink)] transition-colors"
+                >
+                  <span>Chat +234 802 863 4791</span>
+                  <span aria-hidden="true">↗</span>
+                </a>
+              </div>
+
+              {/* Route 3: Studio Inbox */}
+              <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-4 sm:p-5 space-y-2">
+                <div className="flex items-center gap-2">
+                  <span className="font-mono text-xs uppercase text-[var(--accent)] font-semibold">Route 03</span>
+                  <span className="text-xs text-[var(--text-muted)]">· Direct email</span>
+                </div>
+                <p className="font-display text-base font-bold text-[var(--text-primary)]">Direct Studio Inbox</p>
+                <a
+                  href={`mailto:${SITE.email}?subject=Project%20Inquiry%20%E2%80%94%20Digit%20Studio`}
+                  className="font-mono text-sm font-semibold text-[var(--text-primary)] underline decoration-[var(--border-strong)] underline-offset-4 hover:text-[var(--accent)] hover:decoration-[var(--accent)] block"
+                >
+                  {SITE.email}
+                </a>
+              </div>
             </div>
 
-            <div className="space-y-1.5">
-              <p className="text-eyebrow">WhatsApp / Phone</p>
-              <a href={SITE.whatsappUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[44px] items-center font-display text-lg font-semibold text-[var(--text-primary)] hover:text-[var(--accent)]">+234 802 863 4791 ↗</a>
-            </div>
-
-            <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-5 space-y-3">
-              <p className="text-eyebrow">Prefer to talk?</p>
-              <p className="text-sm text-[var(--text-secondary)]">
-                Start a direct WhatsApp conversation to discuss your project.
+            {/* Discovery Call Card */}
+            <div className="rounded-2xl border border-[var(--border-subtle)] bg-gradient-to-br from-[var(--bg-elevated)] to-[var(--bg-primary)] p-5 space-y-3">
+              <p className="text-eyebrow">Discovery Call</p>
+              <h3 className="font-display text-lg font-bold text-[var(--text-primary)]">
+                Book a 20-Minute Intro Call
+              </h3>
+              <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
+                Prefer to discuss your goals face-to-face? Request a Google Meet or WhatsApp video call with Emmanuel.
               </p>
               <a
-                href={SITE.whatsappUrl}
+                href={`${SITE.whatsappUrl}?text=${encodeURIComponent("Hi Emmanuel, I would like to schedule a 20-minute intro call to discuss my project.")}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-[var(--accent)]/40 bg-[var(--accent-soft)] px-4 text-xs font-mono uppercase tracking-[0.12em] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-[var(--accent-ink)]"
+                className="inline-flex min-h-[40px] items-center gap-2 rounded-full bg-[var(--text-primary)] text-[var(--bg-primary)] px-4 text-xs font-semibold hover:bg-[var(--accent)] hover:text-[var(--accent-ink)] transition-colors"
               >
-                <span>Chat on WhatsApp</span>
+                <span>Schedule a 20-Min Call</span>
                 <span aria-hidden="true">↗</span>
               </a>
             </div>
