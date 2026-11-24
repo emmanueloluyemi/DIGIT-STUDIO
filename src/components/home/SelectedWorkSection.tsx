@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { PROJECTS, type ProjectItem } from "@/data/projects";
+import { PROJECTS } from "@/data/projects";
 import { HeadingReveal, FadeUp } from "@/components/motion/TextReveal";
 import { TransitionLink } from "@/components/motion/PageTransitionProvider";
 
@@ -12,7 +12,6 @@ export function SelectedWorkSection() {
   const duoLeft = featured[1];     // Vespera Atelier
   const duoRight = featured[2];    // Aether Robotics
   const bannerProject = featured[3]; // NexaFlow Growth
-  const spotlightProject = featured[4]; // Sora Editorial
 
   return (
     <section

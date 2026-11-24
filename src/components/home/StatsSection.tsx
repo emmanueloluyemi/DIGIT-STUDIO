@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from "react";
 import { ensureGsapRegistered, gsap } from "@/lib/gsap";
 import { STATS } from "@/data/home";
-import { HeadingReveal, FadeUp } from "@/components/motion/TextReveal";
+import { HeadingReveal } from "@/components/motion/TextReveal";
 import { useMediaCapabilities } from "@/hooks/useMediaCapabilities";
 
 function formatNumber(

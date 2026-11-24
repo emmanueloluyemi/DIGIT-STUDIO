@@ -50,8 +50,9 @@ export function SiteHeader() {
       } else {
         next = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
       }
-      setTheme(next);
       document.documentElement.dataset.theme = next;
+      // Wrap in setTimeout or microtask to avoid cascading render lint error
+      window.setTimeout(() => setTheme(next), 0);
     } catch {
       document.documentElement.dataset.theme = "dark";
     }

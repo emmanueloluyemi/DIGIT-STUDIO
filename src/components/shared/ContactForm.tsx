@@ -2,6 +2,7 @@
 
 import React, { useMemo, useState } from "react";
 import { MagneticButton } from "@/components/motion/MagneticButton";
+import { Turnstile } from "@/components/shared/Turnstile";
 import { SITE } from "@/data/site";
 
 const SERVICE_OPTIONS = [
@@ -90,6 +91,7 @@ interface FormValues {
   company: string;
   email: string;
   phone: string;
+  website: string; // Honeypot
 }
 
 const EMPTY: FormValues = {
@@ -101,6 +103,7 @@ const EMPTY: FormValues = {
   company: "",
   email: "",
   phone: "",
+  website: "",
 };
 
 const inputClass =
@@ -121,6 +124,7 @@ export function ContactForm({ defaultService }: { defaultService?: string }) {
     "idle" | "submitting" | "success" | "preview" | "error"
   >("idle");
   const [error, setError] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
 
   const subservices = useMemo(
     () => SUBSERVICES[values.service] || SUBSERVICES["Something Else"],
@@ -168,9 +172,16 @@ export function ContactForm({ defaultService }: { defaultService?: string }) {
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
+        body: JSON.stringify({
+          ...values,
+          turnstileToken,
+        }),
       });
-      const result = await response.json().catch(() => ({}));
+      const result = (await response.json().catch(() => ({}))) as {
+        ok?: boolean;
+        error?: string;
+        provider?: string;
+      };
       if (!response.ok) {
         throw new Error(
           result?.error || `Could not send your enquiry. Please email ${SITE.email} directly.`
@@ -194,9 +205,12 @@ export function ContactForm({ defaultService }: { defaultService?: string }) {
         aria-live="polite"
         className="rounded-3xl border border-[var(--accent)]/40 bg-[var(--bg-elevated)] p-8 sm:p-12 space-y-5 shadow-2xl"
       >
-        <span className="font-mono text-xs uppercase tracking-widest text-[var(--accent)]">
-          {status === "success" ? "Enquiry Received" : "Development Preview"}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="h-2 w-2 rounded-full bg-[var(--accent)]" />
+          <span className="font-mono text-xs uppercase tracking-widest text-[var(--accent)]">
+            {status === "success" ? "Enquiry Received" : "Development Preview"}
+          </span>
+        </div>
         <h3 className="font-display text-3xl font-bold text-[var(--text-primary)]">
           {status === "success"
             ? `Thank you, ${values.name}.`
@@ -204,10 +218,14 @@ export function ContactForm({ defaultService }: { defaultService?: string }) {
         </h3>
         <p className="text-base text-[var(--text-secondary)] leading-relaxed">
           {status === "success"
-            ? "Your project details have reached Digit Studio. Emmanuel will review your requirements and respond within one business day."
-            : "The progressive enquiry flow completed all six validation steps. Connect production mail provider before final public deployment."}
+            ? `Your project brief regarding ${values.service} has been safely received. Emmanuel Oluyemi will review your requirements and respond within one business day.`
+            : "The progressive enquiry flow completed validation successfully. In production, emails will be delivered via the Resend API."}
         </p>
-        <div className="pt-2">
+        <p className="text-sm text-[var(--text-muted)]">
+          A confirmation note has been dispatched to{" "}
+          <strong className="text-[var(--text-primary)]">{values.email}</strong>.
+        </p>
+        <div className="pt-3 flex flex-wrap gap-4 items-center">
           <MagneticButton
             variant="secondary"
             size="md"
@@ -215,10 +233,19 @@ export function ContactForm({ defaultService }: { defaultService?: string }) {
               setValues(EMPTY);
               setStep(0);
               setStatus("idle");
+              setTurnstileToken("");
             }}
           >
             Start another enquiry
           </MagneticButton>
+          <a
+            href={SITE.whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs font-mono uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--accent)]"
+          >
+            Need a faster answer? Chat on WhatsApp ↗
+          </a>
         </div>
       </div>
     );
@@ -230,8 +257,27 @@ export function ContactForm({ defaultService }: { defaultService?: string }) {
   return (
     <form
       onSubmit={(e) => e.preventDefault()}
-      className="rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-6 sm:p-10 space-y-8 shadow-2xl"
+      className="rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-6 sm:p-10 space-y-8 shadow-2xl relative"
     >
+      {/* Honeypot field for bot trapping (invisible to humans and screen readers) */}
+      <input
+        type="text"
+        name="website"
+        tabIndex={-1}
+        autoComplete="off"
+        value={values.website}
+        onChange={(e) => update("website", e.target.value)}
+        style={{
+          position: "absolute",
+          left: "-9999px",
+          opacity: 0,
+          height: 0,
+          width: 0,
+          pointerEvents: "none",
+        }}
+        aria-hidden="true"
+      />
+
       {/* Step Counter & Progress Indicator */}
       <div className="space-y-3">
         <div className="flex items-center justify-between text-xs font-mono uppercase tracking-[0.14em]">
@@ -504,20 +550,53 @@ export function ContactForm({ defaultService }: { defaultService?: string }) {
               {values.message}
             </p>
           </div>
+
+          {/* Cloudflare Turnstile Verification Widget */}
+          <div className="pt-2">
+            <Turnstile
+              onVerify={(token) => {
+                setTurnstileToken(token);
+                setError("");
+              }}
+              onError={() => setError("Security verification failed. Please refresh and try again.")}
+              onExpire={() => setTurnstileToken("")}
+            />
+          </div>
+
           <p className="text-xs text-[var(--text-muted)]">
             Your details will only be used by Digit Studio to review and respond to this enquiry.
           </p>
         </section>
       )}
 
-      {/* Error message */}
+      {/* Error message with fallback to email */}
       {error && (
-        <p
+        <div
           role="alert"
-          className="rounded-lg border border-[var(--status-error)]/40 bg-[var(--status-error)]/10 p-3 text-sm text-[var(--status-error)]"
+          aria-live="assertive"
+          className="rounded-xl border border-[var(--status-error)]/40 bg-[var(--status-error)]/10 p-4 space-y-2 text-sm text-[var(--status-error)]"
         >
-          {error}
-        </p>
+          <p className="font-semibold">{error}</p>
+          <p className="text-xs text-[var(--text-secondary)]">
+            If this issue persists, please send your project brief directly to{" "}
+            <a
+              href={`mailto:${SITE.email}?subject=Project Enquiry from ${encodeURIComponent(values.name || "Client")}`}
+              className="text-[var(--accent)] underline underline-offset-2 font-medium hover:text-[var(--text-primary)]"
+            >
+              {SITE.email}
+            </a>{" "}
+            or chat with us on{" "}
+            <a
+              href={SITE.whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[var(--accent)] underline underline-offset-2 font-medium hover:text-[var(--text-primary)]"
+            >
+              WhatsApp
+            </a>
+            .
+          </p>
+        </div>
       )}
 
       {/* Action Navigation Buttons */}
@@ -526,11 +605,12 @@ export function ContactForm({ defaultService }: { defaultService?: string }) {
           {step > 0 && (
             <button
               type="button"
+              disabled={status === "submitting"}
               onClick={() => {
                 setError("");
                 setStep((curr) => curr - 1);
               }}
-              className="min-h-11 rounded-full border border-[var(--border-strong)] px-5 text-xs font-mono uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+              className="min-h-11 rounded-full border border-[var(--border-strong)] px-5 text-xs font-mono uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--text-primary)] disabled:opacity-50"
             >
               ← Back
             </button>
@@ -550,9 +630,16 @@ export function ContactForm({ defaultService }: { defaultService?: string }) {
             type="button"
             disabled={status === "submitting"}
             onClick={handleSubmit}
-            className="min-h-11 rounded-full bg-[var(--accent)] px-8 text-xs font-mono uppercase tracking-widest font-bold text-white hover:bg-[var(--accent-hover)] transition-all disabled:opacity-60 shadow-lg shadow-[var(--accent)]/20"
+            className="min-h-11 rounded-full bg-[var(--accent)] px-8 text-xs font-mono uppercase tracking-widest font-bold text-white hover:bg-[var(--accent-hover)] transition-all disabled:opacity-60 shadow-lg shadow-[var(--accent)]/20 inline-flex items-center gap-2"
           >
-            {status === "submitting" ? "Submitting..." : "Submit Project Enquiry →"}
+            {status === "submitting" ? (
+              <>
+                <span className="h-3 w-3 rounded-full border-2 border-white/40 border-t-white animate-spin" />
+                <span>Sending enquiry...</span>
+              </>
+            ) : (
+              <span>Submit Project Enquiry →</span>
+            )}
           </button>
         )}
       </div>

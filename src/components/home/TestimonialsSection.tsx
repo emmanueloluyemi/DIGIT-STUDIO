@@ -9,6 +9,14 @@ import { useMediaCapabilities } from "@/hooks/useMediaCapabilities";
 
 export function TestimonialsSection() {
   if (TESTIMONIALS.length === 0) return null;
+  return <TestimonialsCarousel testimonials={TESTIMONIALS} />;
+}
+
+function TestimonialsCarousel({
+  testimonials,
+}: {
+  testimonials: TestimonialItem[];
+}) {
   const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -37,7 +45,7 @@ export function TestimonialsSection() {
 
   const snapToIndex = useCallback(
     (nextIndex: number) => {
-      const clamped = Math.max(0, Math.min(TESTIMONIALS.length - 1, nextIndex));
+      const clamped = Math.max(0, Math.min(testimonials.length - 1, nextIndex));
       setActiveIndex(clamped);
 
       const track = trackRef.current;
@@ -60,7 +68,7 @@ export function TestimonialsSection() {
         overwrite: true,
       });
     },
-    [getStride, prefersReducedMotion]
+    [getStride, prefersReducedMotion, testimonials.length]
   );
 
   useEffect(() => {
@@ -99,7 +107,7 @@ export function TestimonialsSection() {
     ds.lastX = e.clientX;
 
     const maxOffset = 0;
-    const minOffset = -(TESTIMONIALS.length - 1) * ds.stride;
+    const minOffset = -(testimonials.length - 1) * ds.stride;
     let nextX = ds.startOffset + delta;
 
     if (nextX > maxOffset) {
@@ -143,9 +151,7 @@ export function TestimonialsSection() {
                 rel="noopener noreferrer"
                 className="inline-flex min-h-[44px] items-center gap-2 font-medium text-[var(--accent)] underline underline-offset-4 hover:text-[var(--text-primary)]"
               >
-                <span>
-                  Client reviews available on request
-                </span>
+                <span>Client reviews available on request</span>
                 <span aria-hidden="true">↗</span>
               </a>
             </p>
@@ -153,7 +159,7 @@ export function TestimonialsSection() {
 
           <div className="flex items-center gap-3">
             <span className="mr-2 font-mono text-xs tabular-nums text-[var(--text-secondary)]">
-              0{activeIndex + 1} / 0{TESTIMONIALS.length}
+              0{activeIndex + 1} / 0{testimonials.length}
             </span>
             <button
               type="button"
@@ -167,7 +173,7 @@ export function TestimonialsSection() {
             <button
               type="button"
               onClick={() => snapToIndex(activeIndex + 1)}
-              disabled={activeIndex === TESTIMONIALS.length - 1}
+              disabled={activeIndex === testimonials.length - 1}
               aria-label="Next testimonial"
               className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[var(--border-strong)] bg-[var(--bg-elevated)] text-base text-[var(--text-primary)] transition-all active:scale-95 hover:border-[var(--accent)] hover:text-[var(--accent)] disabled:opacity-35 disabled:pointer-events-none"
             >
@@ -183,8 +189,9 @@ export function TestimonialsSection() {
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerUp}
-          className={`relative select-none touch-pan-y ${isDragging ? "cursor-grabbing" : "cursor-grab"
-            }`}
+          className={`relative select-none touch-pan-y ${
+            isDragging ? "cursor-grabbing" : "cursor-grab"
+          }`}
           role="region"
           aria-roledescription="carousel"
           aria-label="Client testimonials"
@@ -193,7 +200,7 @@ export function TestimonialsSection() {
             ref={trackRef}
             className="flex gap-5 sm:gap-7 will-change-transform"
           >
-            {TESTIMONIALS.map((item: TestimonialItem, idx: number) => {
+            {testimonials.map((item: TestimonialItem, idx: number) => {
               const isActive = idx === activeIndex;
               return (
                 <article
@@ -201,10 +208,11 @@ export function TestimonialsSection() {
                   onClick={() => {
                     if (!isActive) snapToIndex(idx);
                   }}
-                  className={`flex w-[86vw] max-w-[540px] shrink-0 flex-col justify-between gap-8 rounded-3xl border p-6 sm:p-9 transition-all duration-500 ${isActive
+                  className={`flex w-[86vw] max-w-[540px] shrink-0 flex-col justify-between gap-8 rounded-3xl border p-6 sm:p-9 transition-all duration-500 ${
+                    isActive
                       ? "border-[var(--accent)]/50 bg-[var(--bg-elevated)] scale-100 opacity-100"
                       : "border-[var(--border-subtle)] bg-[var(--bg-elevated)]/55 scale-[0.96] opacity-70 hover:opacity-90"
-                    }`}
+                  }`}
                 >
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <span className="rounded-full border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-3.5 py-1 font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--accent)]">
@@ -251,7 +259,7 @@ export function TestimonialsSection() {
         </div>
 
         <div className="flex items-center gap-2 pt-2">
-          {TESTIMONIALS.map((item: TestimonialItem, idx: number) => (
+          {testimonials.map((item: TestimonialItem, idx: number) => (
             <button
               key={item.id}
               type="button"
@@ -261,10 +269,11 @@ export function TestimonialsSection() {
               className="group flex min-h-[44px] items-center px-1"
             >
               <span
-                className={`block h-1.5 rounded-full transition-all duration-300 ${idx === activeIndex
+                className={`block h-1.5 rounded-full transition-all duration-300 ${
+                  idx === activeIndex
                     ? "w-10 bg-[var(--accent)]"
                     : "w-3 bg-[var(--border-strong)] group-hover:bg-[var(--text-secondary)]"
-                  }`}
+                }`}
               />
             </button>
           ))}

@@ -5,10 +5,6 @@ import { ensureGsapRegistered, gsap, ScrollTrigger } from "@/lib/gsap";
 import { TOOLS_MARQUEE } from "@/data/home";
 import { useMediaCapabilities } from "@/hooks/useMediaCapabilities";
 
-interface ToolsMarqueeSectionProps {
-  isLightTheme?: boolean;
-}
-
 function ToolGlyph({ name }: { name: string }) {
   const initials = name
     .split(" ")
@@ -27,7 +23,7 @@ function ToolGlyph({ name }: { name: string }) {
   );
 }
 
-export function ToolsMarqueeSection({ isLightTheme = false }: ToolsMarqueeSectionProps) {
+export function ToolsMarqueeSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const { isDesktopFinePointer, prefersReducedMotion } = useMediaCapabilities();

@@ -38,16 +38,59 @@ A dark-first, crimson-and-off-white creative studio website built with Next.js A
 
 5. Open `http://localhost:3000`.
 
-## Contact form delivery
+## Contact form delivery & security
 
-The project enquiry form is a multi-step frontend flow. The API route supports Resend or Formspree. Configure either provider before production launch:
+The project enquiry form is a hardened multi-step intake flow backed by the Resend HTTP API and Cloudflare Turnstile.
 
-- `RESEND_API_KEY`
-- `CONTACT_TO_EMAIL`
-- `CONTACT_FROM_EMAIL` (optional)
-- or `FORMSPREE_ENDPOINT`
+### Required environment variables
 
-Without a provider, local development returns a preview response. Production submissions are not reported as successful until a delivery provider is configured.
+Configure in `.env.local` for local development or `.dev.vars` for local OpenNext Cloudflare preview:
+
+- `RESEND_API_KEY`: Your Resend API key (`re_...`).
+- `CONTACT_TO_EMAIL`: Studio destination inbox where client enquiries arrive.
+- `CONTACT_FROM_EMAIL`: Verified sender address in Resend (e.g. `Digit Studio <hello@your-domain.com>`).
+- `TURNSTILE_SECRET_KEY`: Cloudflare Turnstile secret key for server-side verification.
+- `NEXT_PUBLIC_TURNSTILE_SITE_KEY`: Cloudflare Turnstile public site key.
+
+### Resend domain verification
+
+1. Add your custom domain in the [Resend Domains Dashboard](https://resend.com/domains).
+2. Configure the provided DKIM, SPF, and DMARC DNS records in your domain registrar or Cloudflare DNS.
+3. Once verified, set `CONTACT_FROM_EMAIL` to an address using your verified domain.
+
+### Production secrets on Cloudflare Workers
+
+Store server-side secrets in Cloudflare Workers using Wrangler:
+
+```bash
+npx wrangler secret put RESEND_API_KEY
+npx wrangler secret put CONTACT_TO_EMAIL
+npx wrangler secret put CONTACT_FROM_EMAIL
+npx wrangler secret put TURNSTILE_SECRET_KEY
+```
+
+### Cloudflare WAF rate-limiting rule
+
+To protect the endpoint at the edge before hitting the Worker:
+1. In Cloudflare Dashboard, go to **Security > WAF > Rate limiting rules**.
+2. Create a rule matching:
+   - **URI Path** equals `/api/contact`
+   - **Method** equals `POST`
+3. Configure rate limit:
+   - Requests: `5` requests per `10` minutes per IP address.
+   - Action: `Block` (or `Managed Challenge`) for `15 minutes`.
+
+### Local preview with OpenNext Cloudflare
+
+To test the exact Cloudflare Workers bundle locally:
+
+```bash
+# 1. Copy dev secrets
+cp .dev.vars.example .dev.vars
+
+# 2. Run OpenNext local preview
+npm run preview:cf
+```
 
 ## Site configuration
 

@@ -32,7 +32,7 @@ export default function AboutPage() {
           <div className="lg:col-span-4 space-y-2"><p className="text-eyebrow">The studio</p><h2 className="font-display text-2xl sm:text-3xl font-bold">A connected approach to creative and digital work.</h2></div>
           <div className="lg:col-span-8 space-y-5 text-base sm:text-lg leading-relaxed text-[var(--text-secondary)]">
             <p>Businesses rarely need just one isolated deliverable. A brand may need a visual identity, a website, product content and a consistent social presence. Digit Studio connects these capabilities so the work can feel coherent from the first impression to the digital experience.</p>
-            <p>The studio is founder-led. Emmanuel works directly with clients and brings in trusted creative or technical collaborators when a project's scope calls for additional expertise. This keeps communication clear while allowing the right skills to support the work.</p>
+            <p>The studio is founder-led. Emmanuel works directly with clients and brings in trusted creative or technical collaborators when a project&apos;s scope calls for additional expertise. This keeps communication clear while allowing the right skills to support the work.</p>
             <p className="text-[var(--text-primary)] font-medium">Based in Nigeria. Working with clients and businesses across locations.</p>
           </div>
         </div>
@@ -50,7 +50,7 @@ export default function AboutPage() {
           <div className="lg:col-span-8 space-y-5">
             <h2 className="font-display text-3xl sm:text-4xl font-bold">Emmanuel Oluyemi</h2>
             <p className="text-eyebrow">Founder · Creative & Digital</p>
-            <p className="text-base sm:text-lg leading-relaxed text-[var(--text-secondary)]">Emmanuel's work spans graphic design and branding, web design and development, AI video creation, animation, content creation and social media management. His approach combines visual thinking with an understanding of the business, audience and market behind each project.</p>
+            <p className="text-base sm:text-lg leading-relaxed text-[var(--text-secondary)]">Emmanuel&apos;s work spans graphic design and branding, web design and development, AI video creation, animation, content creation and social media management. His approach combines visual thinking with an understanding of the business, audience and market behind each project.</p>
             <div className="flex flex-wrap gap-3">
               <MagneticButton href={SITE.linkedinUrl} external variant="secondary" size="sm">LinkedIn ↗</MagneticButton>
               <MagneticButton href={SITE.upworkUrl} external variant="secondary" size="sm">Upwork ↗</MagneticButton>
@@ -67,7 +67,7 @@ export default function AboutPage() {
       </section>
 
       <section className="container-editorial border-t border-[var(--border-subtle)] py-14 sm:py-20 space-y-6">
-        <div className="max-w-3xl space-y-3"><p className="text-eyebrow">Professional profiles</p><h2 className="text-h2">Find Digit Studio across platforms.</h2><p className="text-[var(--text-secondary)]">Explore the founder's professional profile or the studio's Fiverr service channel.</p></div>
+        <div className="max-w-3xl space-y-3"><p className="text-eyebrow">Professional profiles</p><h2 className="text-h2">Find Digit Studio across platforms.</h2><p className="text-[var(--text-secondary)]">Explore the founder&apos;s professional profile or the studio&apos;s Fiverr service channel.</p></div>
         <div className="flex flex-wrap gap-3">{PLATFORM_PROFILES.map((profile) => <MagneticButton key={profile.label} href={profile.href} external variant="secondary" size="md">{profile.label} ↗</MagneticButton>)}</div>
       </section>
     </div>

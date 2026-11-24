@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { PROCESS_STEPS, type ProcessStep } from "@/data/home";
+import { PROCESS_STEPS } from "@/data/home";
 import { HeadingReveal, FadeUp } from "@/components/motion/TextReveal";
 
 export function ProcessSection() {

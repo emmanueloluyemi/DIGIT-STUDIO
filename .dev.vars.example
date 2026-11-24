@@ -1,0 +1,5 @@
+# Cloudflare Workers local environment secrets for OpenNext (copy to .dev.vars)
+RESEND_API_KEY=re_your_api_key_here
+CONTACT_TO_EMAIL=inbox@your-domain.example
+CONTACT_FROM_EMAIL=Digit Studio <hello@your-domain.example>
+TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
