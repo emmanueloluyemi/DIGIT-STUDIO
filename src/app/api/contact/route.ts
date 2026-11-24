@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { SITE } from "@/data/site";
+import { siteConfig } from "@/content/site";
 
 const contactSchema = z.object({
   name: z
@@ -44,7 +44,7 @@ const contactSchema = z.object({
   message: z
     .string()
     .trim()
-    .min(15, "Please share at least 15 characters about your project.")
+    .min(10, "Please share at least 10 characters about your project.")
     .max(4000, "Project description cannot exceed 4000 characters."),
   website: z.string().optional(), // Honeypot trap
   turnstileToken: z.string().optional(),
@@ -98,13 +98,13 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // 3. Verify Origin header in production matches SITE.siteUrl
+  // 3. Verify Origin header in production matches siteConfig.siteUrl
   if (process.env.NODE_ENV === "production") {
     const origin = request.headers.get("origin");
     if (origin) {
       try {
         const originUrl = new URL(origin);
-        const siteUrl = new URL(SITE.siteUrl);
+        const siteUrl = new URL(siteConfig.siteUrl);
         if (originUrl.host !== siteUrl.host) {
           return NextResponse.json(
             { error: "Forbidden origin." },
@@ -209,7 +209,7 @@ export async function POST(request: NextRequest) {
       }
       return NextResponse.json(
         {
-          error: `Enquiry service is temporarily unavailable. Please email ${SITE.email} directly.`,
+          error: `Inquiry service is temporarily unavailable. Please email ${siteConfig.email} directly.`,
         },
         { status: 503 }
       );
@@ -238,43 +238,39 @@ export async function POST(request: NextRequest) {
   // 10. Send Email (a): The enquiry to CONTACT_TO_EMAIL
   const cleanName = sanitizeSubject(data.name);
   const cleanService = sanitizeSubject(data.service);
-  const inquirySubject = `[${SITE.brand}] ${cleanService} enquiry from ${cleanName}`;
+  const inquirySubject = `[${siteConfig.name}] ${cleanService} enquiry from ${cleanName}`;
 
   const inquiryHtml = `
     <!DOCTYPE html>
     <html lang="en">
       <head><meta charset="utf-8" /></head>
-      <body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#111;line-height:1.6;margin:0;padding:24px;background:#f7f5f3;">
-        <div style="max-width:600px;margin:0 auto;background:#fff;border-radius:12px;padding:28px;border:1px solid #e5e2dd;">
-          <h2 style="color:#8B0D1A;margin-top:0;margin-bottom:16px;font-size:22px;">New Project Enquiry — ${escapeHtml(SITE.brand)}</h2>
+      <body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#17120F;line-height:1.6;margin:0;padding:24px;background:#F4EFE6;">
+        <div style="max-width:600px;margin:0 auto;background:#FBF8F2;border-radius:6px;padding:28px;border:1px solid #E6DCCB;">
+          <h2 style="color:#8B0D1A;margin-top:0;margin-bottom:16px;font-size:22px;font-weight:normal;">New Project Inquiry — ${escapeHtml(siteConfig.name)}</h2>
           <table style="width:100%;border-collapse:collapse;font-size:14px;margin-bottom:20px;">
-            <tr style="border-bottom:1px solid #f0eee9;"><td style="padding:10px 0;width:140px;color:#77716E;"><strong>Name:</strong></td><td style="padding:10px 0;color:#111;">${escapeHtml(data.name)}</td></tr>
-            <tr style="border-bottom:1px solid #f0eee9;"><td style="padding:10px 0;color:#77716E;"><strong>Email:</strong></td><td style="padding:10px 0;"><a href="mailto:${escapeHtml(data.email)}" style="color:#8B0D1A;text-decoration:none;">${escapeHtml(data.email)}</a></td></tr>
-            <tr style="border-bottom:1px solid #f0eee9;"><td style="padding:10px 0;color:#77716E;"><strong>Company:</strong></td><td style="padding:10px 0;color:#111;">${escapeHtml(data.company)}</td></tr>
-            <tr style="border-bottom:1px solid #f0eee9;"><td style="padding:10px 0;color:#77716E;"><strong>Phone:</strong></td><td style="padding:10px 0;color:#111;">${escapeHtml(data.phone)}</td></tr>
-            <tr style="border-bottom:1px solid #f0eee9;"><td style="padding:10px 0;color:#77716E;"><strong>Service:</strong></td><td style="padding:10px 0;color:#111;">${escapeHtml(data.service)}</td></tr>
-            <tr style="border-bottom:1px solid #f0eee9;"><td style="padding:10px 0;color:#77716E;"><strong>Requirement:</strong></td><td style="padding:10px 0;color:#111;">${escapeHtml(data.specific)}</td></tr>
-            <tr><td style="padding:10px 0;color:#77716E;"><strong>Budget Tier:</strong></td><td style="padding:10px 0;color:#111;">${escapeHtml(data.budget)}</td></tr>
+            <tr style="border-bottom:1px solid #E6DCCB;"><td style="padding:10px 0;width:140px;color:#5A5249;"><strong>Name:</strong></td><td style="padding:10px 0;color:#17120F;">${escapeHtml(data.name)}</td></tr>
+            <tr style="border-bottom:1px solid #E6DCCB;"><td style="padding:10px 0;color:#5A5249;"><strong>Email:</strong></td><td style="padding:10px 0;"><a href="mailto:${escapeHtml(data.email)}" style="color:#8B0D1A;text-decoration:none;">${escapeHtml(data.email)}</a></td></tr>
+            <tr style="border-bottom:1px solid #E6DCCB;"><td style="padding:10px 0;color:#5A5249;"><strong>Company:</strong></td><td style="padding:10px 0;color:#17120F;">${escapeHtml(data.company)}</td></tr>
+            <tr style="border-bottom:1px solid #E6DCCB;"><td style="padding:10px 0;color:#5A5249;"><strong>Service:</strong></td><td style="padding:10px 0;color:#17120F;">${escapeHtml(data.service)}</td></tr>
+            <tr><td style="padding:10px 0;color:#5A5249;"><strong>Budget:</strong></td><td style="padding:10px 0;color:#17120F;">${escapeHtml(data.budget)}</td></tr>
           </table>
-          <hr style="border:none;border-top:1px solid #f0eee9;margin:24px 0 16px;" />
-          <h3 style="font-size:15px;margin:0 0 8px;color:#111;">Project Overview:</h3>
-          <div style="white-space:pre-wrap;background:#f9f8f6;padding:16px;border-radius:8px;border:1px solid #e8e5e0;font-size:14px;color:#222;line-height:1.65;">${escapeHtml(data.message)}</div>
-          <p style="font-size:12px;color:#999;margin-top:24px;border-top:1px solid #eee;padding-top:12px;">Submitted via ${escapeHtml(SITE.brand)} Web Portal · IP: ${escapeHtml(clientIp)}</p>
+          <hr style="border:none;border-top:1px solid #E6DCCB;margin:24px 0 16px;" />
+          <h3 style="font-size:15px;margin:0 0 8px;color:#17120F;">Project Details:</h3>
+          <div style="white-space:pre-wrap;background:#F4EFE6;padding:16px;border-radius:4px;border:1px solid #E6DCCB;font-size:14px;color:#17120F;line-height:1.65;">${escapeHtml(data.message)}</div>
+          <p style="font-size:12px;color:#5A5249;margin-top:24px;border-top:1px solid #E6DCCB;padding-top:12px;">Sent via ${escapeHtml(siteConfig.name)} Website · Client IP: ${escapeHtml(clientIp)}</p>
         </div>
       </body>
     </html>
   `;
 
-  const inquiryText = `New Project Enquiry — ${SITE.brand}\n\n` +
+  const inquiryText = `New Project Inquiry — ${siteConfig.name}\n\n` +
     `Name: ${data.name}\n` +
     `Email: ${data.email}\n` +
     `Company: ${data.company}\n` +
-    `Phone: ${data.phone}\n` +
     `Service: ${data.service}\n` +
-    `Specific Requirement: ${data.specific}\n` +
-    `Budget Tier: ${data.budget}\n` +
+    `Budget: ${data.budget}\n` +
     `Client IP: ${clientIp}\n\n` +
-    `Project Overview:\n${data.message}\n`;
+    `Project Details:\n${data.message}\n`;
 
   const resendInquiryRes = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -299,7 +295,7 @@ export async function POST(request: NextRequest) {
     console.error("Resend API inquiry error:", resendInquiryRes.status, errorJson.message || "");
     return NextResponse.json(
       {
-        error: `Email delivery failed. Please reach out directly to ${SITE.email}.`,
+        error: `Email delivery failed. Please reach out directly to ${siteConfig.email}.`,
       },
       { status: 502 }
     );
@@ -307,29 +303,29 @@ export async function POST(request: NextRequest) {
 
   // 11. Send Email (b): Auto-reply confirmation to the visitor from CONTACT_FROM_EMAIL
   try {
-    const autoReplySubject = `[${SITE.brand}] We received your project enquiry`;
+    const autoReplySubject = `[${siteConfig.name}] We received your inquiry`;
     const autoReplyHtml = `
       <!DOCTYPE html>
       <html lang="en">
         <head><meta charset="utf-8" /></head>
-        <body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#111;line-height:1.6;margin:0;padding:24px;background:#f7f5f3;">
-          <div style="max-width:560px;margin:0 auto;background:#fff;border-radius:12px;padding:28px;border:1px solid #e5e2dd;">
-            <h2 style="color:#8B0D1A;margin-top:0;margin-bottom:12px;font-size:20px;">Thank you for contacting ${escapeHtml(SITE.brand)}</h2>
-            <p style="font-size:14px;color:#333;">Hi ${escapeHtml(data.name)},</p>
-            <p style="font-size:14px;color:#333;">We have received your enquiry regarding <strong>${escapeHtml(data.service)}</strong>. Emmanuel Oluyemi and the studio team will review your requirements and respond within 24 to 48 hours.</p>
-            <p style="font-size:14px;color:#333;">If you have additional reference materials or immediate questions, feel free to reply directly to this email or chat with us on WhatsApp at <a href="${escapeHtml(SITE.whatsappUrl)}" style="color:#8B0D1A;text-decoration:none;">${escapeHtml(SITE.phone)}</a>.</p>
-            <hr style="border:none;border-top:1px solid #f0eee9;margin:24px 0;" />
-            <p style="font-size:12px;color:#888;margin:0;">${escapeHtml(SITE.brand)} · ${escapeHtml(SITE.tagline)}<br />${escapeHtml(SITE.timezoneNote)}</p>
+        <body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#17120F;line-height:1.6;margin:0;padding:24px;background:#F4EFE6;">
+          <div style="max-width:560px;margin:0 auto;background:#FBF8F2;border-radius:6px;padding:28px;border:1px solid #E6DCCB;">
+            <h2 style="color:#8B0D1A;margin-top:0;margin-bottom:12px;font-size:20px;font-weight:normal;">Thank you for writing to ${escapeHtml(siteConfig.name)}</h2>
+            <p style="font-size:14px;color:#17120F;">Hi ${escapeHtml(data.name)},</p>
+            <p style="font-size:14px;color:#17120F;">I received your inquiry regarding <strong>${escapeHtml(data.service)}</strong>. I review every project note personally and will reply with questions or a cost range within 48 hours.</p>
+            <p style="font-size:14px;color:#17120F;">If you have brief notes or links to add in the meantime, feel free to reply directly to this email or message on WhatsApp: <a href="${escapeHtml(siteConfig.whatsappUrl)}" style="color:#8B0D1A;text-decoration:none;">${escapeHtml(siteConfig.whatsappNumber)}</a>.</p>
+            <hr style="border:none;border-top:1px solid #E6DCCB;margin:24px 0;" />
+            <p style="font-size:12px;color:#5A5249;margin:0;">${escapeHtml(siteConfig.name)} · Emmanuel Oluyemi<br />${escapeHtml(siteConfig.location)}</p>
           </div>
         </body>
       </html>
     `;
 
     const autoReplyText = `Hi ${data.name},\n\n` +
-      `Thank you for contacting ${SITE.brand}. We have received your project enquiry regarding "${data.service}".\n\n` +
-      `Emmanuel Oluyemi and the studio team will review your requirements and respond within 24 to 48 hours.\n\n` +
-      `If you have immediate files or questions, reply to this email or message us on WhatsApp: ${SITE.whatsappUrl}\n\n` +
-      `--\n${SITE.brand} · ${SITE.tagline}\n${SITE.timezoneNote}\n`;
+      `Thank you for reaching out to ${siteConfig.name}. I received your note regarding "${data.service}".\n\n` +
+      `I review all project requirements personally and will respond within 48 hours with scope questions or an initial estimate.\n\n` +
+      `If you need to send files or have an immediate question, reply to this email or message via WhatsApp: ${siteConfig.whatsappUrl}\n\n` +
+      `--\n${siteConfig.name} · Emmanuel Oluyemi\n${siteConfig.location}\n`;
 
     await fetch("https://api.resend.com/emails", {
       method: "POST",

@@ -1,287 +1,151 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Image from "next/image";
-import { PROJECTS } from "@/data/projects";
-import { SERVICES } from "@/data/services";
-import { HeadingReveal, FadeUp } from "@/components/motion/TextReveal";
-import { MagneticButton } from "@/components/motion/MagneticButton";
-import { TransitionLink } from "@/components/motion/PageTransitionProvider";
-import { CaseStudyParallax } from "@/components/work/CaseStudyParallax";
+import Link from "next/link";
+import { caseStudies } from "@/content/projects";
 
-interface ProjectDetailPageProps {
+interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
 export function generateStaticParams() {
-  return PROJECTS.map((p) => ({ slug: p.slug }));
+  return caseStudies.map((p) => ({ slug: p.slug }));
 }
 
-export async function generateMetadata({
-  params,
-}: ProjectDetailPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const project = PROJECTS.find((p) => p.slug === slug);
-  if (!project) {
-    return { title: "Project Not Found" };
-  }
+  const project = caseStudies.find((p) => p.slug === slug);
+  if (!project) return { title: "Project Not Found" };
+
   return {
-    title: {
-      absolute: `${project.title} | ${project.category} Case Study | Digit Studio`,
-    },
-    description: project.tagline,
+    title: `${project.title} — Case Study | Digit Studio`,
+    description: project.summary,
     alternates: {
       canonical: `/work/${project.slug}`,
-    },
-    openGraph: {
-      title: `${project.title} | ${project.category} Case Study | Digit Studio`,
-      description: project.tagline,
-      images: [{ url: project.posterImage, width: 1280, height: 720, alt: project.title }],
     },
   };
 }
 
-export default async function ProjectDetailPage({ params }: ProjectDetailPageProps) {
+export default async function CaseStudyDetailPage({ params }: PageProps) {
   const { slug } = await params;
-  const currentIdx = PROJECTS.findIndex((p) => p.slug === slug);
-  if (currentIdx === -1) {
-    notFound();
-  }
+  const currentIdx = caseStudies.findIndex((p) => p.slug === slug);
+  if (currentIdx === -1) notFound();
 
-  const project = PROJECTS[currentIdx];
-  const nextProject = PROJECTS[(currentIdx + 1) % PROJECTS.length];
-  const linkedService = SERVICES.find((s) => s.slug === project.serviceSlug);
+  const project = caseStudies[currentIdx];
+  const nextProject = caseStudies[(currentIdx + 1) % caseStudies.length];
 
   return (
-    <article className="pt-[calc(var(--header-height)+3rem)] pb-20 sm:pb-28">
-      {/* Case Study Hero */}
-      <header className="container-editorial space-y-10 pb-12 sm:pb-16">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <TransitionLink
-            href="/work"
-            className="inline-flex min-h-[44px] items-center gap-2 text-xs font-mono uppercase tracking-[0.14em] text-[var(--text-secondary)] hover:text-[var(--accent)]"
-          >
-            <span aria-hidden="true">←</span>
-            <span>All work</span>
-          </TransitionLink>
-
-          <div className="flex flex-wrap items-center gap-2.5">
-            <span className="rounded-full border border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-3.5 py-1.5 font-mono text-xs uppercase tracking-[0.12em] text-[var(--text-primary)]">
-              {project.category}
-            </span>
-            {project.isConcept ? (
-              <span className="rounded-full border border-[var(--border-strong)] bg-[var(--bg-elevated)] px-3.5 py-1.5 font-mono text-xs uppercase tracking-[0.1em] text-[var(--text-secondary)]">
-                Studio Concept
-              </span>
-            ) : null}
-            <span className="rounded-full border border-[var(--accent)]/40 bg-[var(--accent-soft)] px-3.5 py-1.5 font-mono text-xs uppercase tracking-[0.12em] text-[var(--accent)]">
-              {project.engagementModel}
-            </span>
-            <span className="font-mono text-xs text-[var(--text-muted)]">
-              {project.year}
-            </span>
+    <article className="py-12 sm:py-18">
+      <div className="site-container space-y-12 max-w-4xl">
+        {/* Header Breadcrumb */}
+        <div className="space-y-4 border-b border-[var(--border-subtle)] pb-8">
+          <div className="flex items-center gap-2 text-xs text-[var(--muted)]">
+            <Link href="/work" className="underline hover:text-[var(--ink)]">
+              ← Back to Work
+            </Link>
+            <span>·</span>
+            <span>{project.category}</span>
+            <span>·</span>
+            <span className="font-semibold text-[var(--crimson)]">{project.clientLabel}</span>
           </div>
-        </div>
 
-        <div className="space-y-6 max-w-5xl">
-          <HeadingReveal as="h1" trigger="enter" delay={0.08} className="text-display">
+          <h1 className="text-4xl sm:text-5xl font-normal text-[var(--ink)]">
             {project.title}
-          </HeadingReveal>
-          <FadeUp trigger="enter" delay={0.2}>
-            <p className="text-lead text-[var(--text-secondary)] max-w-3xl">
-              {project.tagline}
-            </p>
-          </FadeUp>
+          </h1>
+
+          <p className="text-lg sm:text-xl text-[var(--muted)] reading-col">
+            {project.subtitle}
+          </p>
+
+          <div className="pt-2 flex flex-wrap gap-6 text-xs text-[var(--muted)]">
+            <span>Sector: <strong className="text-[var(--ink)] font-medium">{project.sector}</strong></span>
+            <span>Timeline: <strong className="text-[var(--ink)] font-medium">{project.timeline}</strong></span>
+          </div>
         </div>
 
-        <CaseStudyParallax
-          src={project.posterImage}
-          alt={`${project.title} homepage design showcase built with ${project.tools[0]}`}
-          priority
-        />
-
-        {/* At a glance strip */}
-        <div className="grid grid-cols-1 gap-6 border-y border-[var(--border-subtle)] py-8 sm:grid-cols-2 lg:grid-cols-4">
-          <div>
-            <p className="text-eyebrow">Client Type</p>
-            <p className="mt-2 font-display text-lg font-semibold">{project.client}</p>
-          </div>
-          <div>
-            <p className="text-eyebrow">Service &amp; Model</p>
-            {linkedService ? (
-              <TransitionLink
-                href={`/services/${linkedService.slug}`}
-                className="mt-2 inline-block font-display text-lg font-semibold text-[var(--accent)] hover:underline"
-              >
-                {linkedService.title} →
-              </TransitionLink>
-            ) : (
-              <p className="mt-2 font-display text-lg font-semibold">{project.role}</p>
-            )}
-            <p className="mt-0.5 text-xs text-[var(--text-muted)]">
-              {project.engagementModel}
+        {/* Narrative Sections */}
+        <div className="space-y-10 text-base sm:text-lg leading-relaxed text-[var(--ink)] reading-col">
+          <section className="space-y-3">
+            <h2 className="font-serif text-2xl font-normal text-[var(--ink)]">
+              Context
+            </h2>
+            <p className="text-[var(--muted)]">
+              {project.context}
             </p>
-          </div>
-          <div>
-            <p className="text-eyebrow">Status / Timeline</p>
-            <p className="mt-2 font-display text-lg font-semibold">{project.timeline}</p>
-          </div>
-          <div>
-            <p className="text-eyebrow">Platform &amp; Tools</p>
-            <div className="mt-2 flex flex-wrap gap-1.5">
-              {project.tools.map((tool) => (
-                <span
-                  key={tool}
-                  className="rounded-full border border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-2.5 py-1 text-xs text-[var(--text-primary)]"
-                >
-                  {tool}
-                </span>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="font-serif text-2xl font-normal text-[var(--ink)]">
+              The problem
+            </h2>
+            <p className="text-[var(--muted)]">
+              {project.problem}
+            </p>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="font-serif text-2xl font-normal text-[var(--ink)]">
+              The approach
+            </h2>
+            <p className="text-[var(--muted)]">
+              {project.approach}
+            </p>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="font-serif text-2xl font-normal text-[var(--ink)]">
+              The result
+            </h2>
+            <p className="text-[var(--muted)]">
+              {project.result}
+            </p>
+          </section>
+
+          {/* Key Outcomes Box */}
+          <div className="rounded-[var(--radius)] border border-[var(--border-subtle)] bg-[var(--surface)] p-6 space-y-3">
+            <h3 className="font-serif text-xl font-normal text-[var(--ink)]">
+              Key outcomes
+            </h3>
+            <ul className="space-y-2 text-sm text-[var(--muted)]">
+              {project.keyOutcomes.map((item) => (
+                <li key={item} className="flex items-start gap-2">
+                  <span className="text-[var(--crimson)] font-bold">✓</span>
+                  <span>{item}</span>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
-        </div>
-      </header>
 
-      {/* Snapshot Badges */}
-      <section aria-label="Case study snapshot" className="container-editorial py-8 sm:py-12">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          {project.metrics.map((metric) => (
-            <div
-              key={metric.label}
-              className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-6 sm:p-8"
-            >
-              <p className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-[var(--accent)]">
-                {metric.value}
-              </p>
-              <p className="mt-2 font-mono text-xs uppercase tracking-[0.14em] text-[var(--text-secondary)]">
-                {metric.label}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* The Challenge, What We Did & The Result */}
-      <section className="container-editorial space-y-16 py-12 sm:py-16">
-        <div className="grid grid-cols-1 gap-6 border-t border-[var(--border-subtle)] pt-10 lg:grid-cols-12">
-          <div className="lg:col-span-4">
-            <p className="text-eyebrow">01 · The Challenge</p>
-            <h2 className="mt-2 font-display text-2xl sm:text-3xl font-bold">
-              What needed to work better
-            </h2>
-          </div>
-          <div className="lg:col-span-8">
-            <p className="text-base sm:text-xl leading-relaxed text-[var(--text-secondary)]">
-              {project.challenge}
-            </p>
+          {/* Deliverables */}
+          <div className="space-y-3 pt-2">
+            <h3 className="font-serif text-xl font-normal text-[var(--ink)]">
+              Deliverables provided
+            </h3>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-[var(--muted)]">
+              {project.deliverables.map((item) => (
+                <li key={item} className="rounded-[var(--radius)] border border-[var(--border-subtle)] bg-[var(--paper)] p-3">
+                  {item}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 border-t border-[var(--border-subtle)] pt-10 lg:grid-cols-12">
-          <div className="lg:col-span-4">
-            <p className="text-eyebrow">02 · What We Did</p>
-            <h2 className="mt-2 font-display text-2xl sm:text-3xl font-bold">
-              Design, build &amp; tools
-            </h2>
-          </div>
-          <div className="lg:col-span-8 space-y-4">
-            {project.process.map((step, i) => (
-              <div
-                key={step}
-                className="flex items-start gap-4 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)]/65 p-5 sm:p-6"
-              >
-                <span className="font-mono text-xs text-[var(--accent)] mt-1">
-                  0{i + 1}
-                </span>
-                <p className="text-sm sm:text-base text-[var(--text-primary)] leading-relaxed">
-                  {step}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 gap-6 border-t border-[var(--border-subtle)] pt-10 lg:grid-cols-12">
-          <div className="lg:col-span-4">
-            <p className="text-eyebrow">03 · The Result</p>
-            <h2 className="mt-2 font-display text-2xl sm:text-3xl font-bold">
-              Outcome
-            </h2>
-          </div>
-          <div className="lg:col-span-8 space-y-4">
-            {project.results.map((res) => (
-              <div
-                key={res}
-                className="flex items-start gap-3.5 border-b border-[var(--border-subtle)] pb-4 text-base sm:text-lg text-[var(--text-primary)]"
-              >
-                <span
-                  aria-hidden="true"
-                  className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[var(--accent)]"
-                />
-                <span>{res}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Gallery */}
-      <section aria-label="Project gallery" className="container-editorial space-y-6 py-8">
-        <p className="text-eyebrow">04 · Gallery</p>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          {project.galleryImages.map((imgUrl, idx) => (
-            <CaseStudyParallax
-              key={`${imgUrl}-${idx}`}
-              src={imgUrl}
-              alt={`${project.title} screen preview ${idx + 1} built on ${project.tools[0]}`}
-            />
-          ))}
-        </div>
-      </section>
-
-      {/* Next Project & Footer CTA */}
-      <section aria-label="Next case study" className="container-editorial pt-16 sm:pt-20">
-        <div className="border-t border-[var(--border-subtle)] pt-12">
-          <p className="text-eyebrow mb-6">Next Project</p>
-          <TransitionLink
-            href={`/work/${nextProject.slug}`}
-            data-cursor="view"
-            className="group grid grid-cols-1 items-center gap-8 rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-6 sm:p-10 transition-colors hover:border-[var(--accent)] lg:grid-cols-12"
+        {/* Next Project Link */}
+        <div className="border-t-2 border-[var(--ink)] pt-8 flex items-center justify-between">
+          <Link
+            href="/work"
+            className="text-xs font-semibold underline decoration-1 underline-offset-4 hover:text-[var(--crimson)]"
           >
-            <div className="lg:col-span-7 space-y-3">
-              <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-[0.12em] text-[var(--accent)]">
-                <span>{nextProject.index}</span>
-                <span>·</span>
-                <span>{nextProject.category}</span>
-              </div>
-              <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-tight transition-transform duration-500 ease-[var(--ease-expo)] group-hover:translate-x-2">
-                {nextProject.title}
-              </h2>
-              <p className="text-sm sm:text-base text-[var(--text-secondary)] max-w-xl">
-                {nextProject.tagline}
-              </p>
-            </div>
-
-            <div className="lg:col-span-5 relative aspect-[16/10] w-full overflow-hidden rounded-2xl border border-[var(--border-subtle)]">
-              <Image
-                src={nextProject.posterImage}
-                alt={`${nextProject.title} preview`}
-                fill
-                sizes="(max-width: 1024px) 100vw, 40vw"
-                className="object-cover transition-transform duration-700 ease-[var(--ease-expo)] group-hover:scale-105"
-              />
-            </div>
-          </TransitionLink>
-
-          <div className="mt-10 flex flex-wrap items-center justify-between gap-4">
-            <MagneticButton href="/work" variant="secondary" size="md">
-              ← See all work
-            </MagneticButton>
-            <MagneticButton href="/contact" variant="primary" size="md">
-              Want results like this? Start your project →
-            </MagneticButton>
-          </div>
+            ← All case studies
+          </Link>
+          <Link
+            href={`/work/${nextProject.slug}`}
+            className="text-xs font-semibold text-[var(--crimson)] underline decoration-1 underline-offset-4 hover:text-[var(--crimson-hover)]"
+          >
+            Next: {nextProject.title} →
+          </Link>
         </div>
-      </section>
+      </div>
     </article>
   );
 }

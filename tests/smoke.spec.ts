@@ -36,14 +36,14 @@ test.describe("Digit Studio Smoke Tests", () => {
 
     // Check primary heading
     const heading = page.locator("h1");
-    await expect(heading).toContainText(/Tell us about your project/i);
+    await expect(heading).toContainText(/Start a project/i);
 
     // Check contact form exists
     const form = page.locator("form");
     await expect(form).toBeVisible();
 
     // Verify name and email fields exist
-    const nameInput = page.locator('input[placeholder*="Name" i], input[name*="name" i]').first();
+    const nameInput = page.locator('input[name="name"], input#form-name').first();
     await expect(nameInput).toBeVisible();
   });
 });

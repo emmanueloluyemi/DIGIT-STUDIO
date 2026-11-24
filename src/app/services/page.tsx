@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
-import Image from "next/image";
-import { SERVICES } from "@/data/services";
-import { TOOLS_MARQUEE } from "@/data/home";
-import { SITE } from "@/data/site";
-import { HeadingReveal, FadeUp } from "@/components/motion/TextReveal";
-import { MagneticButton } from "@/components/motion/MagneticButton";
-import { TransitionLink } from "@/components/motion/PageTransitionProvider";
+import Link from "next/link";
+import {
+  serviceOffers,
+  pricingPrinciples,
+  whatINeedFromYou,
+  serviceFaqs,
+} from "@/content/services";
 
 export const metadata: Metadata = {
-  title: "Services",
+  title: "Services & Pricing — Brand Identity, Websites, AI Video, Content",
   description:
-    "Branding and graphic design, web design and development, AI video and animation, social media management, content creation and custom creative projects.",
+    "Transparent deliverables, timelines, and starting prices for brand identity, custom website design and development, AI video, and monthly social content.",
   alternates: {
     canonical: "/services",
   },
@@ -18,165 +18,178 @@ export const metadata: Metadata = {
 
 export default function ServicesPage() {
   return (
-    <div className="pt-[calc(var(--header-height)+3.5rem)] pb-20 sm:pb-28">
-      <section className="container-editorial space-y-10 pb-16 sm:pb-20">
-        <div className="space-y-5 max-w-4xl">
-          <p className="text-eyebrow">03 · Services · Creative and digital capabilities, thoughtfully connected</p>
-          <HeadingReveal as="h1" trigger="enter" delay={0.08} className="text-h1">
-            Creative and digital services, connected by one studio.
-          </HeadingReveal>
-          <FadeUp trigger="enter" delay={0.2}>
-            <p className="text-lead text-[var(--text-secondary)] max-w-3xl">
-              Explore six connected service areas: branding and graphic design, web design and
-              development, AI video and animation, social media management, content creation, and
-              custom creative projects. Every engagement is led by {SITE.owner}.
-            </p>
-          </FadeUp>
+    <div className="py-12 sm:py-18">
+      <div className="site-container space-y-16">
+        {/* Header */}
+        <div className="space-y-4 max-w-3xl">
+          <p className="text-xs font-semibold uppercase tracking-wider text-[var(--crimson)]">
+            Studio capabilities &amp; pricing
+          </p>
+          <h1 className="text-4xl sm:text-5xl font-normal text-[var(--ink)]">
+            Four focused offers, priced and scoped in writing.
+          </h1>
+          <p className="text-base sm:text-lg text-[var(--muted)] reading-col">
+            I work directly with founders and marketing teams. Below is an honest breakdown of what is included, what is excluded, how long it takes, and what it costs.
+          </p>
         </div>
 
-        <FadeUp trigger="enter" delay={0.28} className="flex flex-wrap gap-2.5">
-          {SERVICES.map((svc) => (
-            <TransitionLink
-              key={svc.id}
-              href={`/services/${svc.slug}`}
-              className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-4 text-xs font-mono uppercase tracking-[0.1em] text-[var(--text-secondary)] hover:border-[var(--accent)] hover:text-[var(--accent)]"
+        {/* Four Stacked Service Offers with Anchors */}
+        <div className="space-y-16 border-t-2 border-[var(--ink)] pt-12">
+          {serviceOffers.map((offer, idx) => (
+            <section
+              key={offer.id}
+              id={offer.anchor}
+              className="scroll-mt-24 rounded-[var(--radius)] border border-[var(--border-subtle)] bg-[var(--surface)] p-6 sm:p-10 lg:p-12 space-y-8"
             >
-              <span className="text-[var(--accent)]">{svc.index}</span>
-              <span>{svc.title}</span>
-            </TransitionLink>
-          ))}
-        </FadeUp>
-      </section>
-
-      <section className="container-editorial space-y-12 border-t border-[var(--border-subtle)] pt-14 sm:pt-20">
-        {SERVICES.map((svc, idx) => {
-          const prefill = encodeURIComponent(svc.contactOption);
-
-          return (
-            <article
-              key={svc.id}
-              id={svc.id}
-              className="scroll-mt-24 grid grid-cols-1 gap-8 rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)]/65 p-6 sm:p-10 lg:grid-cols-12 lg:gap-12"
-            >
-              <div className="lg:col-span-7 flex flex-col justify-between gap-6">
-                <div className="space-y-4">
-                  <div className="flex flex-wrap items-center gap-3">
-                    <span className="font-mono text-xs text-[var(--accent)]">
-                      {svc.index}
-                    </span>
-                    <span className="rounded-full border border-[var(--border-subtle)] px-3 py-1 font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--text-secondary)]">
-                      {svc.shortTag}
-                    </span>
-                  </div>
-
-                  <h2 className="font-display text-2xl sm:text-4xl font-bold tracking-tight">
-                    <TransitionLink
-                      href={`/services/${svc.slug}`}
-                      className="hover:text-[var(--accent)] transition-colors"
-                    >
-                      {svc.title}
-                    </TransitionLink>
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between border-b border-[var(--border-subtle)] pb-4">
+                <div className="space-y-1">
+                  <span className="font-mono text-xs text-[var(--muted)]">Offer 0{idx + 1}</span>
+                  <h2 className="font-serif text-3xl font-normal text-[var(--ink)]">
+                    {offer.title}
                   </h2>
-
-                  <p className="text-base sm:text-lg text-[var(--text-secondary)] leading-relaxed">
-                    {svc.intro}
-                  </p>
                 </div>
+                <div className="text-xs">
+                  <span className="font-semibold text-[var(--crimson)]">{offer.timeline}</span>
+                </div>
+              </div>
 
-                <div className="space-y-4 border-t border-[var(--border-subtle)] pt-6">
-                  <p className="text-eyebrow">What&apos;s included</p>
-                  <ul className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-                    {svc.capabilities.map((cap) => (
-                      <li
-                        key={cap}
-                        className="flex items-center gap-2.5 text-sm text-[var(--text-primary)]"
-                      >
-                        <span
-                          aria-hidden="true"
-                          className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]"
-                        />
-                        <span>{cap}</span>
+              <p className="text-base sm:text-lg font-medium text-[var(--ink)] reading-col">
+                {offer.headline}
+              </p>
+
+              {/* Who It Is For */}
+              <div className="space-y-1.5 text-sm">
+                <p className="font-semibold text-[var(--ink)]">Who this is for:</p>
+                <p className="text-[var(--muted)] leading-relaxed reading-col">{offer.forWhom}</p>
+              </div>
+
+              {/* Two columns: Included vs Not Included */}
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 pt-2">
+                <div className="space-y-2 rounded-[var(--radius)] border border-[var(--border-subtle)] bg-[var(--paper)] p-5">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-[var(--ink)]">
+                    What is included
+                  </p>
+                  <ul className="space-y-2 text-xs sm:text-sm text-[var(--muted)]">
+                    {offer.included.map((item) => (
+                      <li key={item} className="flex items-start gap-2">
+                        <span className="text-[var(--crimson)] font-bold">✓</span>
+                        <span>{item}</span>
                       </li>
                     ))}
                   </ul>
-                  <p className="text-xs sm:text-sm text-[var(--text-muted)]">
-                    <strong className="text-[var(--text-primary)]">Best for:</strong> {svc.bestFor}
+                </div>
+
+                <div className="space-y-2 rounded-[var(--radius)] border border-[var(--border-subtle)] bg-[var(--paper)] p-5">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
+                    What is not included
                   </p>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-3 pt-2">
-                  <MagneticButton
-                    href={`/contact?service=${prefill}`}
-                    variant={idx % 2 === 0 ? "primary" : "secondary"}
-                    size="md"
-                  >
-                    <span>Tell us what you need</span>
-                    <span aria-hidden="true">→</span>
-                  </MagneticButton>
-                  <MagneticButton
-                    href={`/services/${svc.slug}`}
-                    variant="ghost"
-                    size="md"
-                  >
-                    <span>Service details</span>
-                  </MagneticButton>
+                  <ul className="space-y-2 text-xs sm:text-sm text-[var(--muted)]">
+                    {offer.notIncluded.map((item) => (
+                      <li key={item} className="flex items-start gap-2">
+                        <span className="text-[var(--muted)] font-bold">×</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
 
-              <div className="lg:col-span-5 flex flex-col justify-between gap-4">
-                <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl border border-[var(--border-subtle)]">
-                  <Image
-                    src={svc.previewImage}
-                    alt={svc.previewAlt}
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 40vw"
-                    className="object-cover"
-                  />
+              {/* Pricing, Mini Case Study & CTA */}
+              <div className="flex flex-col gap-4 border-t border-[var(--border-subtle)] pt-6 sm:flex-row sm:items-center sm:justify-between text-xs sm:text-sm">
+                <div className="space-y-1">
+                  <p className="font-semibold text-[var(--crimson)]">{offer.pricingNote}</p>
+                  <p className="text-xs text-[var(--muted)]">{offer.deliverableExample}</p>
                 </div>
-                <div className="flex items-center justify-between rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-primary)]/70 px-4 py-3 text-xs font-mono text-[var(--text-secondary)]">
-                  <span>{svc.accentLabel}</span>
-                  <span className="text-[var(--accent)]">Solo / Team</span>
-                </div>
+                <Link
+                  href={`/contact?service=${encodeURIComponent(offer.title)}`}
+                  className="inline-flex items-center justify-center rounded-[var(--radius)] bg-[var(--crimson)] px-5 py-2.5 text-xs font-semibold text-white hover:bg-[var(--crimson-hover)] transition-colors shrink-0"
+                >
+                  Get a quote in 48 hours
+                </Link>
               </div>
-            </article>
-          );
-        })}
-      </section>
-
-      <section className="container-editorial mt-16 sm:mt-24 border-t border-[var(--border-subtle)] pt-14 space-y-8">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-eyebrow">Platforms &amp; Tools</p>
-            <h2 className="mt-2 font-display text-2xl sm:text-4xl font-bold">
-              Your platform, our expertise.
-            </h2>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <MagneticButton href="/work" variant="secondary" size="sm">
-              See all work →
-            </MagneticButton>
-            <MagneticButton href="/faq" variant="ghost" size="sm">
-              Read the full FAQ
-            </MagneticButton>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-          {TOOLS_MARQUEE.map((tool) => (
-            <div
-              key={tool.name}
-              className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-4"
-            >
-              <p className="font-display text-base font-bold text-[var(--text-primary)]">
-                {tool.name}
-              </p>
-              <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--text-muted)]">
-                {tool.category}
-              </p>
-            </div>
+            </section>
           ))}
         </div>
-      </section>
+
+        {/* How We Price Section */}
+        <section className="py-12 border-t-2 border-[var(--ink)] space-y-8">
+          <div className="space-y-2 max-w-2xl">
+            <p className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
+              Pricing philosophy
+            </p>
+            <h2 className="font-serif text-3xl font-normal text-[var(--ink)]">
+              How pricing works.
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            {pricingPrinciples.map((item) => (
+              <div
+                key={item.title}
+                className="rounded-[var(--radius)] border border-[var(--border-subtle)] bg-[var(--surface)] p-6 space-y-2"
+              >
+                <h3 className="font-serif text-xl font-normal text-[var(--ink)]">
+                  {item.title}
+                </h3>
+                <p className="text-xs sm:text-sm text-[var(--muted)] leading-relaxed">
+                  {item.text}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* What I Need From You */}
+        <section className="py-12 border-t-2 border-[var(--ink)] space-y-6">
+          <div className="space-y-2 max-w-2xl">
+            <p className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
+              Client collaboration
+            </p>
+            <h2 className="font-serif text-3xl font-normal text-[var(--ink)]">
+              What I need from you.
+            </h2>
+          </div>
+
+          <div className="rounded-[var(--radius)] border border-[var(--border-subtle)] bg-[var(--surface)] p-6 sm:p-8">
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-[var(--ink)]">
+              {whatINeedFromYou.map((req) => (
+                <li key={req} className="flex items-start gap-2.5">
+                  <span className="text-[var(--crimson)] font-bold">·</span>
+                  <span>{req}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        {/* FAQ with Native <details> */}
+        <section className="py-12 border-t-2 border-[var(--ink)] space-y-8">
+          <div className="space-y-2 max-w-2xl">
+            <p className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
+              Common questions
+            </p>
+            <h2 className="font-serif text-3xl font-normal text-[var(--ink)]">
+              Frequently asked questions.
+            </h2>
+          </div>
+
+          <div className="space-y-3">
+            {serviceFaqs.map((faq) => (
+              <details
+                key={faq.question}
+                className="group rounded-[var(--radius)] border border-[var(--border-subtle)] bg-[var(--surface)] p-5 text-sm transition-colors open:bg-[var(--paper)]"
+              >
+                <summary className="cursor-pointer font-serif text-lg font-normal text-[var(--ink)] hover:text-[var(--crimson)] focus:outline-none">
+                  {faq.question}
+                </summary>
+                <p className="mt-3 text-sm text-[var(--muted)] leading-relaxed reading-col">
+                  {faq.answer}
+                </p>
+              </details>
+            ))}
+          </div>
+        </section>
+      </div>
     </div>
   );
 }

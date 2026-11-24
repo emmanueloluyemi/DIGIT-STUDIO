@@ -1,78 +1,66 @@
 import type { Metadata } from "next";
-import { JOURNAL_POSTS } from "@/data/journal";
-import { HeadingReveal, FadeUp } from "@/components/motion/TextReveal";
-import { TransitionLink } from "@/components/motion/PageTransitionProvider";
+import Link from "next/link";
+import { journalArticles } from "@/content/journal";
 
 export const metadata: Metadata = {
-  title: {
-    absolute: "Journal · Creative Technology & Engineering Notes | Digit Studio",
-  },
+  title: "Journal — Notes for Business Owners & Founders | Digit Studio",
   description:
-    "Engineering notes, WebGL experiments, design systems, and behind-the-scenes craft notes from Digit Studio founder Emmanuel Oluyemi.",
+    "Honest guides on brand identity essentials, realistic website pricing, AI video applications, and manageable content planning.",
   alternates: {
     canonical: "/journal",
   },
 };
 
-export default function JournalPage() {
+export default function JournalIndexPage() {
   return (
-    <div className="pt-[calc(var(--header-height)+3.5rem)] pb-20 sm:pb-28">
-      <section className="container-editorial space-y-8 pb-14 sm:pb-18">
-        <div className="space-y-4 max-w-4xl">
-          <p className="text-eyebrow">Studio Notes · Creative Technology &amp; Craft</p>
-          <HeadingReveal as="h1" trigger="enter" delay={0.08} className="text-h1">
-            Thoughts on code, craft &amp; digital performance.
-          </HeadingReveal>
-        </div>
-        <FadeUp trigger="enter" delay={0.2} className="max-w-2xl">
-          <p className="text-lead text-[var(--text-secondary)]">
-            Technical writeups, architectural decisions, WebGL optimizations, and behind-the-scenes insights from the Digit Studio workshop.
+    <div className="py-12 sm:py-18">
+      <div className="site-container space-y-12">
+        <div className="space-y-4 max-w-2xl">
+          <p className="text-xs font-semibold uppercase tracking-wider text-[var(--crimson)]">
+            Studio Journal
           </p>
-        </FadeUp>
-      </section>
+          <h1 className="text-4xl sm:text-5xl font-normal text-[var(--ink)]">
+            Notes on craft, pricing &amp; digital reality.
+          </h1>
+          <p className="text-base sm:text-lg text-[var(--muted)] reading-col">
+            No agency buzzwords. Just practical notes written for clients and business owners evaluating design, websites, and video.
+          </p>
+        </div>
 
-      <section className="container-editorial border-t border-[var(--border-subtle)] pt-12 sm:pt-16">
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:gap-12">
-          {JOURNAL_POSTS.map((post) => (
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 border-t-2 border-[var(--ink)] pt-8">
+          {journalArticles.map((article) => (
             <article
-              key={post.slug}
-              className="group flex flex-col justify-between rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-8 sm:p-10 transition-all hover:border-[var(--border-strong)] hover:shadow-xl"
+              key={article.slug}
+              className="flex flex-col justify-between rounded-[var(--radius)] border border-[var(--border-subtle)] bg-[var(--surface)] p-6 sm:p-8 space-y-4 hover:border-[var(--ink)] transition-colors"
             >
-              <div className="space-y-4">
-                <div className="flex items-center justify-between text-xs font-mono text-[var(--text-muted)]">
-                  <span className="rounded-full border border-[var(--border-subtle)] px-3 py-1 uppercase tracking-wider text-[var(--accent)] font-semibold">
-                    {post.category}
-                  </span>
-                  <span>{post.readTime}</span>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between text-xs text-[var(--muted)]">
+                  <span className="font-semibold text-[var(--crimson)]">{article.topic}</span>
+                  <span>{article.readTime}</span>
                 </div>
-
-                <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-[var(--text-primary)] transition-colors group-hover:text-[var(--accent)]">
-                  <TransitionLink href={`/journal/${post.slug}`}>
-                    {post.title}
-                  </TransitionLink>
+                <h2 className="font-serif text-2xl font-normal text-[var(--ink)]">
+                  <Link href={`/journal/${article.slug}`} className="hover:text-[var(--crimson)] transition-colors">
+                    {article.title}
+                  </Link>
                 </h2>
-
-                <p className="text-sm sm:text-base leading-relaxed text-[var(--text-secondary)] line-clamp-3">
-                  {post.excerpt}
+                <p className="text-sm text-[var(--muted)] leading-relaxed">
+                  {article.excerpt}
                 </p>
               </div>
 
-              <div className="mt-8 flex items-center justify-between border-t border-[var(--border-subtle)] pt-5">
-                <span className="font-mono text-xs text-[var(--text-muted)]">
-                  {post.date}
-                </span>
-                <TransitionLink
-                  href={`/journal/${post.slug}`}
-                  className="inline-flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)] group-hover:text-[var(--accent)]"
+              <div className="pt-4 border-t border-[var(--border-subtle)] flex items-center justify-between text-xs">
+                <span className="text-[var(--muted)]">{article.date}</span>
+                <Link
+                  href={`/journal/${article.slug}`}
+                  className="font-semibold text-[var(--crimson)] hover:underline"
                 >
-                  <span>Read Article</span>
-                  <span aria-hidden="true">→</span>
-                </TransitionLink>
+                  Read note →
+                </Link>
               </div>
             </article>
           ))}
         </div>
-      </section>
+      </div>
     </div>
   );
 }

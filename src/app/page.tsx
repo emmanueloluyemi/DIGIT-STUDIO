@@ -1,16 +1,12 @@
 import React from "react";
 import type { Metadata } from "next";
-import { HeroSection } from "@/components/home/HeroSection";
-import { SelectedWorkSection } from "@/components/home/SelectedWorkSection";
-import { IntroStatementSection } from "@/components/home/IntroStatementSection";
-import { InteractiveStatementSection } from "@/components/home/InteractiveStatementSection";
-import { ServicesSection } from "@/components/home/ServicesSection";
-import { SoloOrTeamSection } from "@/components/home/SoloOrTeamSection";
-import { StatsSection } from "@/components/home/StatsSection";
-import { ToolsMarqueeSection } from "@/components/home/ToolsMarqueeSection";
-import { ProcessSection } from "@/components/home/ProcessSection";
-import { FaqSection } from "@/components/home/FaqSection";
-import { ContactSection } from "@/components/home/ContactSection";
+import { ProblemHero } from "@/components/home/ProblemHero";
+import { FeaturedCase } from "@/components/home/FeaturedCase";
+import { ProjectRunTimeline } from "@/components/home/ProjectRunTimeline";
+import { FounderDesk } from "@/components/home/FounderDesk";
+import { ProofBand } from "@/components/home/ProofBand";
+import { RecentNotes } from "@/components/home/RecentNotes";
+import { DirectContact } from "@/components/home/DirectContact";
 
 export const metadata: Metadata = {
   alternates: {
@@ -21,17 +17,13 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
-      <HeroSection />
-      <SelectedWorkSection />
-      <IntroStatementSection />
-      <InteractiveStatementSection />
-      <ServicesSection />
-      <SoloOrTeamSection />
-      <StatsSection />
-      <ToolsMarqueeSection />
-      <ProcessSection />
-      <FaqSection limit={4} />
-      <ContactSection />
+      <ProblemHero />
+      <FeaturedCase />
+      <ProjectRunTimeline />
+      <FounderDesk />
+      <ProofBand />
+      <RecentNotes />
+      <DirectContact />
     </>
   );
 }

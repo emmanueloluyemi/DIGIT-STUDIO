@@ -1,30 +1,14 @@
-import fs from "node:fs";
-import path from "node:path";
 import { ImageResponse } from "next/og";
-import { SITE } from "@/data/site";
+import { siteConfig } from "@/content/site";
 
-export const alt = `${SITE.brand} — Web Design, Development & AI Video Studio`;
+export const alt = `${siteConfig.name} — Brand Identity, Websites & Digital Craft`;
 export const size = {
   width: 1200,
   height: 630,
 };
 export const contentType = "image/png";
 
-function loadSyneFont(): Buffer | null {
-  try {
-    const fontPath = path.join(process.cwd(), "src/assets/fonts/Syne-Bold.ttf");
-    if (fs.existsSync(fontPath)) {
-      return fs.readFileSync(fontPath);
-    }
-    return null;
-  } catch {
-    return null;
-  }
-}
-
 export default function OpenGraphImage() {
-  const syneFont = loadSyneFont();
-
   return new ImageResponse(
     (
       <div
@@ -34,11 +18,11 @@ export default function OpenGraphImage() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          backgroundColor: "#0B0B0B",
-          color: "#F5F2ED",
-          padding: "64px 72px",
-          fontFamily: syneFont ? "Syne, sans-serif" : "sans-serif",
-          border: "1px solid rgba(245,242,237,0.12)",
+          backgroundColor: "#F4EFE6",
+          color: "#17120F",
+          padding: "72px 80px",
+          fontFamily: "serif",
+          border: "8px solid #E6DCCB",
         }}
       >
         <div
@@ -48,62 +32,68 @@ export default function OpenGraphImage() {
             alignItems: "center",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "18px" }}>
-            <svg
-              width="48"
-              height="48"
-              viewBox="0 0 64 64"
-              style={{ display: "flex" }}
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            <div
+              style={{
+                width: "28px",
+                height: "28px",
+                backgroundColor: "#8B0D1A",
+                borderRadius: "3px",
+                display: "flex",
+              }}
+            />
+            <span
+              style={{
+                fontSize: "28px",
+                fontWeight: 600,
+                letterSpacing: "-0.02em",
+                color: "#17120F",
+              }}
             >
-              <rect width="64" height="64" rx="14" fill="#8B0D1A" />
-              <path
-                d="M20 16 h13 c12 0 19 7 19 16 s-7 16 -19 16 H20 V16 z m10 9 v14 h3 c5 0 9 -3 9 -7 s-4 -7 -9 -7 h-3 z"
-                fill="#F5F2ED"
-              />
-              <rect x="44" y="12" width="6" height="6" fill="#F5F2ED" />
-            </svg>
-            <span style={{ fontSize: "26px", fontWeight: 700, letterSpacing: "0.08em" }}>
-              {SITE.brandUpper}
+              {siteConfig.name}
             </span>
           </div>
+
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              gap: "10px",
-              padding: "10px 20px",
-              borderRadius: "9999px",
-              border: "1px solid rgba(139,13,26,0.45)",
-              backgroundColor: "rgba(139,13,26,0.12)",
-              color: "#8B0D1A",
-              fontSize: "18px",
-              fontWeight: 600,
+              padding: "8px 18px",
+              borderRadius: "4px",
+              border: "1px solid #E6DCCB",
+              backgroundColor: "#FBF8F2",
+              color: "#5A5249",
+              fontSize: "16px",
+              fontFamily: "sans-serif",
             }}
           >
-            300+ people worked with · 100% Job Success
+            {siteConfig.upworkStats.jobSuccess} Job Success · Upwork Verified
           </div>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
           <div
             style={{
-              fontSize: "66px",
-              fontWeight: 800,
-              lineHeight: 1.04,
-              letterSpacing: "-0.04em",
+              display: "flex",
+              fontSize: "64px",
+              lineHeight: 1.08,
+              letterSpacing: "-0.03em",
+              color: "#17120F",
             }}
           >
-            {SITE.tagline}
+            {siteConfig.tagline}
           </div>
           <div
             style={{
-              fontSize: "25px",
-              color: "#B9B1AD",
-              maxWidth: "1000px",
-              lineHeight: 1.35,
+              display: "flex",
+              fontSize: "24px",
+              color: "#5A5249",
+              fontFamily: "sans-serif",
+              maxWidth: "960px",
+              lineHeight: 1.4,
             }}
           >
-            Branding · Web Design · Development · AI Video · Animation · Content
+            Brand identity, websites, AI video & animation, and social content.
           </div>
         </div>
 
@@ -112,29 +102,20 @@ export default function OpenGraphImage() {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            borderTop: "1px solid rgba(245,242,237,0.16)",
+            borderTop: "2px solid #17120F",
             paddingTop: "24px",
-            fontSize: "20px",
-            color: "#B9B1AD",
+            fontSize: "18px",
+            fontFamily: "sans-serif",
+            color: "#5A5249",
           }}
         >
-          <span>{SITE.nameLine}</span>
-          <span style={{ color: "#8B0D1A" }}>{SITE.email}</span>
+          <span>{siteConfig.location}</span>
+          <span style={{ color: "#8B0D1A", fontWeight: 600 }}>{siteConfig.email}</span>
         </div>
       </div>
     ),
-    syneFont
-      ? {
-          ...size,
-          fonts: [
-            {
-              name: "Syne",
-              data: syneFont,
-              style: "normal" as const,
-              weight: 700 as const,
-            },
-          ],
-        }
-      : { ...size }
+    {
+      ...size,
+    }
   );
 }

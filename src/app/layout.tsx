@@ -1,124 +1,81 @@
 import type { Metadata, Viewport } from "next";
-import { Syne, Manrope, Instrument_Serif, JetBrains_Mono } from "next/font/google";
+import { Fraunces, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
-import { SiteShell } from "@/components/layout/SiteShell";
-import { SITE } from "@/data/site";
+import { Navbar } from "@/components/common/Navbar";
+import { Footer } from "@/components/common/Footer";
+import { siteConfig } from "@/content/site";
 
-const syne = Syne({
+const fraunces = Fraunces({
   subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
-  variable: "--font-syne",
+  variable: "--font-fraunces",
   display: "swap",
 });
 
-const manrope = Manrope({
+const hanken = Hanken_Grotesk({
   subsets: ["latin"],
-  variable: "--font-manrope",
-  display: "swap",
-});
-
-const instrumentSerif = Instrument_Serif({
-  subsets: ["latin"],
-  weight: ["400"],
-  style: ["normal", "italic"],
-  variable: "--font-instrument-serif",
-  display: "swap",
-});
-
-const jetbrains = JetBrains_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-jetbrains",
+  variable: "--font-hanken",
   display: "swap",
 });
 
 export const viewport: Viewport = {
-  themeColor: "#0B0B0B",
+  themeColor: "#F4EFE6",
   width: "device-width",
   initialScale: 1,
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL(SITE.siteUrl),
+  metadataBase: new URL(siteConfig.siteUrl),
   alternates: {
     canonical: "/",
   },
   title: {
-    default: "Digit Studio | Creative & Digital Studio",
+    default: "Digit Studio — Independent Brand, Web & Media Studio",
     template: "%s | Digit Studio",
   },
-  description: SITE.description,
+  description: siteConfig.shortDescription,
   openGraph: {
     type: "website",
-    siteName: SITE.brand,
-    title: "Digit Studio | Creative & Digital Studio",
-    description: SITE.description,
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Digit Studio | Creative & Digital Studio",
-    description: SITE.description,
-  },
-  appleWebApp: {
-    capable: true,
-    title: SITE.brand,
-    statusBarStyle: "black-translucent",
+    siteName: siteConfig.name,
+    title: "Digit Studio — Ideas deserve better execution.",
+    description: siteConfig.shortDescription,
+    url: siteConfig.siteUrl,
   },
 };
-
-const PRELOADER_BOOT_SCRIPT = `
-try {
-  var savedTheme = localStorage.getItem('digit-studio-theme');
-  if (savedTheme === 'light' || savedTheme === 'dark') {
-    document.documentElement.dataset.theme = savedTheme;
-  } else {
-    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    document.documentElement.dataset.theme = prefersDark ? 'dark' : 'light';
-  }
-  var seen = sessionStorage.getItem('digit_studio_preloader_seen') === '1';
-  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  document.documentElement.dataset.preloader = (seen || reduced) ? 'done' : 'active';
-} catch (e) {}
-`;
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const sameAs = [SITE.linkedinUrl, SITE.fiverrUrl, SITE.upworkUrl];
-  const baseUrl = SITE.siteUrl.replace(/\/$/, "");
+  const baseUrl = siteConfig.siteUrl.replace(/\/$/, "");
 
-  const jsonLd = {
+  const professionalServiceLd = {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
     "@id": `${baseUrl}/#studio`,
-    name: SITE.brand,
-    alternateName: SITE.alternateName,
+    name: siteConfig.name,
     url: `${baseUrl}/`,
     logo: `${baseUrl}/brand/app-icon.png`,
-    image: `${baseUrl}/brand/logo-mark-dark.svg`,
-    description:
-      SITE.description,
-    email: SITE.email,
-    telephone: SITE.phone,
+    description: siteConfig.shortDescription,
+    email: siteConfig.email,
+    telephone: siteConfig.whatsappNumber,
     areaServed: "Worldwide",
     founder: {
       "@type": "Person",
-      "@id": `${baseUrl}/#founder`,
-      name: SITE.owner,
-      sameAs,
+      name: siteConfig.founder,
+      jobTitle: siteConfig.founderRole,
+      sameAs: [siteConfig.linkedinUrl, siteConfig.upworkUrl],
     },
-    sameAs,
+    sameAs: [siteConfig.linkedinUrl, siteConfig.upworkUrl],
   };
 
-  const websiteJsonLd = {
+  const webSiteLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "@id": `${baseUrl}/#website`,
+    name: siteConfig.name,
     url: `${baseUrl}/`,
-    name: SITE.brand,
-    description: SITE.description,
+    description: siteConfig.shortDescription,
     publisher: {
       "@id": `${baseUrl}/#studio`,
     },
@@ -127,20 +84,28 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      suppressHydrationWarning
-      className={`${syne.variable} ${manrope.variable} ${instrumentSerif.variable} ${jetbrains.variable}`}
+      className={`${fraunces.variable} ${hanken.variable}`}
     >
-      <body suppressHydrationWarning>
-        <script dangerouslySetInnerHTML={{ __html: PRELOADER_BOOT_SCRIPT }} />
+      <body>
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-[var(--radius)] focus:bg-[var(--crimson)] focus:px-4 focus:py-2 focus:text-xs focus:font-semibold focus:text-white"
+        >
+          Skip to main content
+        </a>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(professionalServiceLd) }}
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteLd) }}
         />
-        <SiteShell>{children}</SiteShell>
+        <Navbar />
+        <main id="main">
+          {children}
+        </main>
+        <Footer />
       </body>
     </html>
   );
